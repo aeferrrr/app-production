@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+
 
 class LoginRequest extends FormRequest
 {
@@ -38,19 +40,29 @@ class LoginRequest extends FormRequest
      * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
+{
+    // Cek apakah email terdaftar
+    $user = User::where('email', $this->email)->first();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
-
-        RateLimiter::clear($this->throttleKey());
+    // Jika email tidak ditemukan, langsung hentikan proses dengan error "Email tidak terdaftar"
+    if (!$user) {
+        throw ValidationException::withMessages([
+            'email' => __('Email tidak terdaftar'),
+        ]);
     }
+
+    // Jika email ditemukan tapi password salah, tampilkan error "Password salah"
+    if (!Auth::validate(['email' => $this->email, 'password' => $this->password])) {
+        throw ValidationException::withMessages([
+            'password' => __('Password salah'),
+        ]);
+    }
+
+    // Jika login sukses, lanjutkan autentikasi
+    Auth::attempt($this->only('email', 'password'), $this->boolean('remember'));
+}
+
+    
 
     /**
      * Ensure the login request is not rate limited.
