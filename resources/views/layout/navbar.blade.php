@@ -15,14 +15,14 @@
                     aria-label="Search..." />
             </div>
         </div>
-        <!-- /Search -->
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Place this tag where you want the button to render. -->
-            
-
             <!-- User -->
-            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+            <li class="nav-item navbar-dropdown dropdown-user dropdown d-flex align-items-center">
+                <div class="flex-auto me-2">
+                    <span class="fw-semibold d-block">{{ ucwords(Auth::user()->name) }}</span>
+                </div>
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
                         <img src="{{ asset('assets/img/avatars/nuraisah-avatar.png') }}" alt
@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <span class="fw-semibold d-block"> {{ ucwords(Auth::user()->name) }}</span>
+                                    <span class="fw-semibold d-block">{{ ucwords(Auth::user()->name) }}</span>
                                     <small class="text-muted">{{ ucwords(Auth::user()->role) }}</small>
                                 </div>
                             </div>
@@ -87,6 +87,7 @@
                 </ul>
             </li>
             <!--/ User -->
+
         </ul>
     </div>
 </nav>

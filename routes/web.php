@@ -31,5 +31,13 @@ Route::middleware([Karyawan::class])->group(function () {
 Route::middleware([Admin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/item-karyawan', [AdminController::class, 'itemKaryawan'])->name('admin.item-karyawan');
+    Route::delete('/karyawan/destroy/{id}', [AdminController::class, 'destroy'])->name('admin.karyawan.destroy');
+    //edit
+    Route::get('/admin/karyawan/{id}/edit', [AdminController::class, 'edit'])->name('admin.karyawan.edit');
+    Route::put('/admin/karyawan/{id}', [AdminController::class, 'update'])->name('admin.karyawan.update');
+    //tambah
+    Route::get('/admin/karyawan/create', [AdminController::class, 'create'])->name('admin.karyawan.create');
+    Route::post('/admin/karyawan/store', [AdminController::class, 'store'])->name('admin.karyawan.store');
 });
+
 require __DIR__.'/auth.php';

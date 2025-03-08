@@ -8,26 +8,117 @@ use App\Models\User;
 
 class AdminController extends Controller
 {
+    // Fitur Dashboard 
     public function index()
     {
-        return view('admin.index');
+    // Hitung jumlah total karyawan berdasarkan role (asumsi ada kolom 'role' dengan nilai 'karyawan')
+    $jumlahKaryawan = User::where('role', 'karyawan')->count();
+
+    return view('admin.index', compact('jumlahKaryawan'));
     }
 
-    // Menampilkan daftar Item Karyawan
+    // Menampilkan daftar Item Karyawan (HANYA INI YANG VARIABELNYA MENGGUNAKAN 'PENGGUNA' SISANYA -> USER)
     public function itemKaryawan(Request $request)
     {
-        $pengguna = User::query();
+        $user = User::query();
         if ($request->has('search')) {
-            $pengguna->where(function($query)use($request){
+            $user->where(function($query)use($request){
                 $query->whereAny(['name', 'role', 'email'], 'LIKE', '%'.$request->input('search').'%');
             });
         }
 
-        // Filter Berdasarkan Role (Admin / Karyawan)
+        // Fitur Filter Berdasarkan Role (Admin / Karyawan)
         if ($request->has('role') && in_array($request->input('role'), ['admin', 'karyawan'])) {
-            $pengguna->where('role', $request->input('role'));
+            $user->where('role', $request->input('role'));
         }
-        $pengguna = $pengguna->paginate(5);
-        return view('admin.data-master.karyawan', compact('pengguna', 'request'));
+
+        //Code paginasi
+        $user = $user->paginate(5);
+        return view('admin.data-master.pengguna.karyawan', compact('user', 'request'));
     }
+
+    // Tampil form Karyawan
+    public function create()
+    {
+        return view('admin.data-master.pengguna.karyawan-create');
+    }
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|in:admin,karyawan',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'role.required' => 'Jabatan wajib dipilih.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah digunakan, silakan pilih yang lain.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal harus 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'role' => $request->role,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+
+        return redirect()->route('admin.item-karyawan')->with('success', 'Karyawan berhasil ditambahkan!');
+    }
+
+    
+    // Tampil form Edit Karyawan
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.data-master.pengguna.karyawan-edit', compact('user'));
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required|in:admin,karyawan',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|min:6',
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'role.required' => 'Jabatan wajib dipilih.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah digunakan, silakan pilih yang lain.',
+            'password.min' => 'Password minimal harus 6 karakter.',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->role = $request->role;
+        $user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+
+        $user->save();
+
+        //langsung redirect keread karyawan
+        return redirect()->route('admin.item-karyawan')->with('success', 'Data karyawan berhasil diperbarui!');
+    }
+
+
+    // Hapus Karyawan
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+    
+        return redirect()->route('admin.item-karyawan')->with('success', 'Pengguna berhasil dihapus!');
+    }
+    
 }
