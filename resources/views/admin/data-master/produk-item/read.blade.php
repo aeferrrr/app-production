@@ -16,7 +16,7 @@
             <div class="table-responsive text-nowrap">
                 <!-- Form Filter & Search -->
                 <div class="left-header d-flex justify-content-between align-items-center mx-3">
-                    <form action="{{ route('admin.produk.index') }}" class="d-flex gap-2 p-1" method="get">
+                    <form action="{{ route('admin.produk.item-produk') }}" class="d-flex gap-2 p-1" method="get">
                         @csrf
                         <input type="text" name="search" class="form-control w-auto" placeholder="Cari Produk"
                             value="{{ request('search') }}">

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Karyawan\KaryawanController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Produk\ProdukController;
+use App\Http\Controllers\Admin\Produk\BahanController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -45,7 +46,7 @@ Route::middleware([Admin::class])->group(function () {
 
         // CRUD Produk
         Route::prefix('produk')->name('produk.')->group(function () {
-            Route::get('/', [ProdukController::class, 'index'])->name('index');
+            Route::get('/item-produk', [ProdukController::class, 'index'])->name('item-produk');
             Route::get('/create', [ProdukController::class, 'create'])->name('create');
             Route::post('/store', [ProdukController::class, 'store'])->name('store');
             Route::get('/edit/{id}', [ProdukController::class, 'edit'])->name('edit');
@@ -53,6 +54,16 @@ Route::middleware([Admin::class])->group(function () {
             Route::delete('/destroy/{id}', [ProdukController::class, 'destroy'])->name('destroy');
         });
 
+        // CRUD Bahan
+        Route::prefix('bahan')->name('bahan.')->group(function () {
+            Route::get('/item-bahan', [BahanController::class, 'index'])->name('item-bahan'); // Menampilkan daftar bahan
+            Route::get('/create', [BahanController::class, 'create'])->name('create'); // Form tambah bahan
+            Route::post('/store', [BahanController::class, 'store'])->name('store'); // Simpan bahan baru
+            Route::get('/edit/{id}', [BahanController::class, 'edit'])->name('edit'); // Form edit bahan
+            Route::put('/update/{id}', [BahanController::class, 'update'])->name('update'); // Update bahan
+            Route::delete('/destroy/{id}', [BahanController::class, 'destroy'])->name('destroy'); // Hapus bahan
+            Route::post('/bahan/update-harga', [BahanController::class, 'updateHarga'])->name('bahan.update-harga');
+        });
     });
 });
 

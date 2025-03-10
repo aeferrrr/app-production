@@ -62,6 +62,9 @@
                     <div data-i18n="Analytics">Dashboard</div>
                 </a>
             </li>
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Data Utama</span>
+            </li>
             <li
                 class="menu-item {{ Request::is('admin/item-karyawan', 'admin/item-produk', 'admin/item-bahan', 'admin/item-overhead', 'admin/item-rencana-penjadwalan') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -75,12 +78,12 @@
                         </a>
                     </li>
                     <li class="menu-item {{ Request::is('admin/item-produk') ? 'active' : '' }}">
-                        <a href="{{ route('admin.produk.index') }}" class="menu-link">
+                        <a href="{{ route('admin.produk.item-produk') }}" class="menu-link">
                             <div data-i18n="Produk">Produk</div>
                         </a>
                     </li>
                     <li class="menu-item {{ Request::is('admin/item-bahan') ? 'active' : '' }}">
-                        <a href="#" class="menu-link">
+                        <a href="{{ route('admin.bahan.item-bahan') }}" class="menu-link">
                             <div data-i18n="Bahan">Bahan</div>
                         </a>
                     </li>
@@ -95,6 +98,9 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Produksi</span>
             </li>
             <li
                 class="menu-item {{ Request::is('admin/produk-bahan', 'admin/harga-bahan', 'admin/status-produksi', 'admin/item-lokasi') ? 'active open' : '' }}">
@@ -158,37 +164,8 @@
                     </li>
                 </ul>
             </li>
-            <li class="menu-header small text-uppercase">
-                <span class="menu-header-text">Transaksi</span>
-            </li>
-            <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                    <div data-i18n="Masukan Penjadwalan">Transaksi</div>
-                </a>
-                <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="pages-account-settings-account.html" class="menu-link">
-                            <div data-i18n="Lihat Penjadwalan">Masukan Penjadwalan</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="pages-account-settings-notifications.html" class="menu-link">
-                            <div data-i18n="Notifications">Lihat Penjadwalan</div>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            </li>
             <!-- Misc -->
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
-            <li class="menu-item">
-                <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank"
-                    class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-support"></i>
-                    <div data-i18n="Support">Support</div>
-                </a>
-            </li>
             <li class="menu-item">
                 <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
                     target="_blank" class="menu-link">
@@ -198,5 +175,4 @@
             </li>
     </ul>
     @endif
-
 </aside>
