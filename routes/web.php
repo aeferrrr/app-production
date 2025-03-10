@@ -6,7 +6,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Karyawan\KaryawanController;
 use App\Http\Controllers\Admin\AdminController;
-
+use App\Http\Controllers\Admin\Produk\ProdukController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -29,15 +29,31 @@ Route::middleware([Karyawan::class])->group(function () {
 
 // Middleware untuk admin
 Route::middleware([Admin::class])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/admin/item-karyawan', [AdminController::class, 'itemKaryawan'])->name('admin.item-karyawan');
-    Route::delete('/karyawan/destroy/{id}', [AdminController::class, 'destroy'])->name('admin.karyawan.destroy');
-    //edit
-    Route::get('/admin/karyawan/{id}/edit', [AdminController::class, 'edit'])->name('admin.karyawan.edit');
-    Route::put('/admin/karyawan/{id}', [AdminController::class, 'update'])->name('admin.karyawan.update');
-    //tambah
-    Route::get('/admin/karyawan/create', [AdminController::class, 'create'])->name('admin.karyawan.create');
-    Route::post('/admin/karyawan/store', [AdminController::class, 'store'])->name('admin.karyawan.store');
+    Route::prefix('admin')->name('admin.')->group(function () {
+        
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::get('/item-karyawan', [AdminController::class, 'itemKaryawan'])->name('item-karyawan');
+
+        // CRUD Karyawan
+        Route::prefix('karyawan')->name('karyawan.')->group(function () {
+            Route::delete('/destroy/{id}', [AdminController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/edit', [AdminController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [AdminController::class, 'update'])->name('update');
+            Route::get('/create', [AdminController::class, 'create'])->name('create');
+            Route::post('/store', [AdminController::class, 'store'])->name('store');
+        });
+
+        // CRUD Produk
+        Route::prefix('produk')->name('produk.')->group(function () {
+            Route::get('/', [ProdukController::class, 'index'])->name('index');
+            Route::get('/create', [ProdukController::class, 'create'])->name('create');
+            Route::post('/store', [ProdukController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [ProdukController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [ProdukController::class, 'update'])->name('update');
+            Route::delete('/destroy/{id}', [ProdukController::class, 'destroy'])->name('destroy');
+        });
+
+    });
 });
 
 require __DIR__.'/auth.php';

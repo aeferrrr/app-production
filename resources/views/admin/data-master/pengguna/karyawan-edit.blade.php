@@ -42,6 +42,16 @@
                         @enderror
                     </div>
 
+                    <!-- Input Upah -->
+                    <div class="mb-3">
+                        <label class="form-label">Upah (Rp)</label>
+                        <input type="number" name="upah" class="form-control @error('upah') is-invalid @enderror"
+                            value="{{ old('upah', $user->upah) }}" required>
+                        @error('upah')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- Input Password -->
                     <div class="mb-3">
                         <label class="form-label">Password (Kosongkan jika tidak ingin mengubah)</label>

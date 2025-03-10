@@ -41,6 +41,16 @@
                         @enderror
                     </div>
 
+                    <!-- Input Upah -->
+                    <div class="mb-3">
+                        <label class="form-label">Upah (Rp)</label>
+                        <input type="number" name="upah" class="form-control @error('upah') is-invalid @enderror"
+                            value="{{ old('upah') }}" required>
+                        @error('upah')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- Input Password -->
                     <div class="mb-3">
                         <label class="form-label">Password</label>
@@ -60,6 +70,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
                     <button type="submit" class="btn btn-primary">Tambah Karyawan</button>
                     <a href="{{ route('admin.item-karyawan') }}" class="btn btn-secondary">Kembali</a>
                 </form>

@@ -14,9 +14,6 @@
                 style="word-wrap: break-word; white-space: normal; text-transform: capitalize;">
                 produksi
             </span>
-
-
-
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -64,31 +61,99 @@
                     <i class="menu-icon tf-icons bx bx-home-circle"></i>
                     <div data-i18n="Analytics">Dashboard</div>
                 </a>
-            <li class="menu-item">
+            </li>
+            <li
+                class="menu-item {{ Request::is('admin/item-karyawan', 'admin/item-produk', 'admin/item-bahan', 'admin/item-overhead', 'admin/item-rencana-penjadwalan') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div data-i18n="Layouts">Data Master</div>
                 </a>
-
                 <ul class="menu-sub">
-                    <li class="menu-item">
-                        <a href="layouts-without-menu.html" class="menu-link">
-                            <div data-i18n="Item">Item</div>
-                        </a>
-                    </li>
-                    <li class="menu-item">
+                    <li class="menu-item {{ Request::is('admin/item-karyawan') ? 'active' : '' }}">
                         <a href="{{ route('admin.item-karyawan') }}" class="menu-link">
                             <div data-i18n="Karyawan">Karyawan</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="layouts-container.html" class="menu-link">
+                    <li class="menu-item {{ Request::is('admin/item-produk') ? 'active' : '' }}">
+                        <a href="{{ route('admin.produk.index') }}" class="menu-link">
+                            <div data-i18n="Produk">Produk</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/item-bahan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Bahan">Bahan</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/item-overhead') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Overhead">Overhead</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/item-rencana-penjadwalan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Rencana Penjadwalan">Rencana Penjadwalan</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li
+                class="menu-item {{ Request::is('admin/produk-bahan', 'admin/harga-bahan', 'admin/status-produksi', 'admin/item-lokasi') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-cog"></i>
+                    <div data-i18n="Layouts">Produksi & Penjadwalan</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ Request::is('admin/produk-bahan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Produk Bahan">Produk Bahan</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/harga-bahan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Harga Bahan">Harga Bahan</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/status-produksi') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Status Produksi">Status Produksi</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/item-lokasi') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
                             <div data-i18n="Lokasi">Lokasi</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="layouts-fluid.html" class="menu-link">
-                            <div data-i18n="Rencana Penjadwalan">Rencana Penjadwalan</div>
+                </ul>
+            </li>
+            <li
+                class="menu-item {{ Request::is('admin/produk-bahan', 'admin/harga-bahan', 'admin/status-produksi', 'admin/item-lokasi') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-time"></i>
+                    <div data-i18n="Layouts">Transaksi</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ Request::is('admin/produk-bahan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Transaksi Produksi">Transaksi Produksi</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ Request::is('admin/harga-bahan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="Detail Produksi">Detail Produksi</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li
+                class="menu-item {{ Request::is('admin/produk-bahan', 'admin/harga-bahan', 'admin/status-produksi', 'admin/item-lokasi') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-spreadsheet "></i>
+                    <div data-i18n="Layouts">Harga Pokok Produksi</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ Request::is('admin/produk-bahan') ? 'active' : '' }}">
+                        <a href="#" class="menu-link">
+                            <div data-i18n="HPP ">HPP </div>
                         </a>
                     </li>
                 </ul>

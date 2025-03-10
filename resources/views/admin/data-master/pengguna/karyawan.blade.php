@@ -38,6 +38,7 @@
                             <th>Nama</th>
                             <th>Jabatan</th>
                             <th>Email</th>
+                            <th>Upah</th> <!-- Tambahkan kolom Upah -->
                             <th style="width: 100px; text-align: center;">Action</th>
                         </tr>
                     </thead>
@@ -48,6 +49,7 @@
                                 <td>{{ $pengguna->name }}</td>
                                 <td>{{ ucfirst($pengguna->role) }}</td>
                                 <td>{{ $pengguna->email }}</td>
+                                <td>{{ 'Rp ' . number_format($pengguna->upah, 0, ',', '.') }}</td> <!-- Format Rupiah -->
                                 <td class="d-flex justify-content-center gap-2">
                                     <form action="{{ route('admin.karyawan.destroy', $pengguna->id) }}" method="POST"
                                         onsubmit="return confirm('Apakah Anda yakin ingin menghapus karyawan ini?')">
@@ -57,7 +59,8 @@
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </form>
-                                    <a href="{{ route('admin.karyawan.edit', $pengguna->id) }}" class="text-primary"><i class="bx bx-edit"></i></a>
+                                    <a href="{{ route('admin.karyawan.edit', $pengguna->id) }}" class="text-primary"><i
+                                            class="bx bx-edit"></i></a>
                                 </td>
                             </tr>
                         @endforeach
