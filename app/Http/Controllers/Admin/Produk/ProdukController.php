@@ -50,7 +50,7 @@ class ProdukController extends Controller
             'nama_produk' => $request->nama_produk,
         ]);
 
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan!');
+        return redirect()->route('admin.produk.item-produk')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     /**
@@ -78,7 +78,7 @@ class ProdukController extends Controller
             'nama_produk' => $request->nama_produk,
         ]);
 
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui!');
+        return redirect()->route('admin.produk.item-produk')->with('success', 'Produk berhasil diperbarui!');
     }
 
     /**

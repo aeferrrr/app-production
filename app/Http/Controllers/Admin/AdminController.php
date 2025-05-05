@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Produk;
+use App\Models\Bahan;
+use App\Models\Overhead;
+use App\Models\Lokasi;
 
 class AdminController extends Controller
 {
@@ -13,8 +17,12 @@ class AdminController extends Controller
     {
         // Hitung jumlah total karyawan berdasarkan role
         $jumlahKaryawan = User::where('role', 'karyawan')->count();
+        $jumlahProduk = Produk::count();
+        $jumlahBahan = Bahan::count();
+        $jumlahOverhead = Overhead::count();
+        $jumlahLokasi = Lokasi::count();
 
-        return view('admin.index', compact('jumlahKaryawan'));
+        return view('admin.index', compact('jumlahKaryawan', 'jumlahProduk', 'jumlahBahan', 'jumlahOverhead', 'jumlahLokasi'));
     }
 
     // Menampilkan daftar Item Karyawan
@@ -47,7 +55,7 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:64',
             'role' => 'required|in:admin,karyawan',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',

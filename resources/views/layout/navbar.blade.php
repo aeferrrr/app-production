@@ -49,7 +49,7 @@
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a class="dropdown-item" href="#">
                             <i class="bx bx-user me-2"></i>
                             <span class="align-middle">My Profile</span>
@@ -73,7 +73,7 @@
                     </li>
                     <li>
                         <div class="dropdown-divider"></div>
-                    </li>
+                    </li> --}}
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
