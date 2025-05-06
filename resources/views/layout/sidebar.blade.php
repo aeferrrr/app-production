@@ -152,7 +152,7 @@
         </a>
     </li>
     <li class="menu-item ">
-        <a href="{{ route('admin.index') }}" class="menu-link">
+        <a href="{{ route('admin.produksi.item-penjadwalan') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-calendar-check"></i>
             <div data-i18n="Analytics">Buat Penjadwalan</div>
         </a>
@@ -166,7 +166,13 @@
 
     </li>
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Laporan Transaksi</span></li>
-    <li
+    <li class="menu-item ">
+        <a href="{{ route('admin.index') }}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-calculator"></i>
+            <div data-i18n="Analytics">Laporan Transaksi</div>
+        </a>
+    </li>
+    {{-- <li
         class="menu-item {{ Request::is('admin/produk-bahan', 'admin/harga-bahan', 'admin/status-produksi', 'admin/item-lokasi') ? 'active open' : '' }}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-time"></i>
@@ -184,7 +190,7 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> --}}
     {{-- <li
                 class="menu-item {{ Request::is('admin/produk-bahan', 'admin/harga-bahan', 'admin/status-produksi', 'admin/item-lokasi') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">

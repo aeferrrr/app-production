@@ -48,7 +48,7 @@ class PesananController extends Controller
      * Menyimpan pesanan baru ke database.
      */
     public function store(Request $request)
-    {
+    { 
         $request->validate([
             'kode_pesanan'     => 'required|unique:pesanan,kode_pesanan',
             'tanggal_pesanan'  => 'required|date',

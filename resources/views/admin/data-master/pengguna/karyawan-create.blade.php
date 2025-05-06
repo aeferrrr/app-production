@@ -41,7 +41,7 @@
                         @enderror
                     </div>
 
-                    <!-- Input Upah -->
+                    {{-- <!-- Input Upah -->
                     <div class="mb-3">
                         <label class="form-label">Upah (Rp)</label>
                         <input type="number" name="upah" class="form-control @error('upah') is-invalid @enderror"
@@ -49,7 +49,7 @@
                         @error('upah')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                    </div>
+                    </div> --}}
 
                     <!-- Input Password -->
                     <div class="mb-3">

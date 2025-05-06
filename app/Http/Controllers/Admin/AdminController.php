@@ -59,7 +59,7 @@ class AdminController extends Controller
             'role' => 'required|in:admin,karyawan',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'upah' => 'required|integer|min:0',
+            // 'upah' => 'required|integer|min:0',
         ], [
             'name.required' => 'Nama wajib diisi.',
             'role.required' => 'Jabatan wajib dipilih.',
@@ -69,9 +69,9 @@ class AdminController extends Controller
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal harus 6 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'upah.required' => 'Upah wajib diisi.',
-            'upah.integer' => 'Upah harus berupa angka tanpa desimal.',
-            'upah.min' => 'Upah tidak boleh negatif.',
+            // 'upah.required' => 'Upah wajib diisi.',
+            // 'upah.integer' => 'Upah harus berupa angka tanpa desimal.',
+            // 'upah.min' => 'Upah tidak boleh negatif.',
         ]);
 
         User::create([
@@ -79,7 +79,7 @@ class AdminController extends Controller
             'role' => $request->role,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'upah' => $request->upah,
+            // 'upah' => $request->upah,
         ]);
 
         return redirect()->route('admin.item-karyawan')->with('success', 'Karyawan berhasil ditambahkan!');
@@ -100,7 +100,7 @@ class AdminController extends Controller
             'role' => 'required|in:admin,karyawan',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6',
-            'upah' => 'required|integer|min:0',
+            // 'upah' => 'required|integer|min:0',
         ], [
             'name.required' => 'Nama wajib diisi.',
             'role.required' => 'Jabatan wajib dipilih.',
@@ -108,16 +108,16 @@ class AdminController extends Controller
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email ini sudah digunakan, silakan pilih yang lain.',
             'password.min' => 'Password minimal harus 6 karakter.',
-            'upah.required' => 'Upah wajib diisi.',
-            'upah.integer' => 'Upah harus berupa angka tanpa desimal.',
-            'upah.min' => 'Upah tidak boleh negatif.',
+            // 'upah.required' => 'Upah wajib diisi.',
+            // 'upah.integer' => 'Upah harus berupa angka tanpa desimal.',
+            // 'upah.min' => 'Upah tidak boleh negatif.',
         ]);
 
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->role = $request->role;
         $user->email = $request->email;
-        $user->upah = $request->upah;
+        // $user->upah = $request->upah;
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->password);
