@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\Produk\LokasiController;
 use App\Http\Controllers\Admin\Pembuatan\ProdukBahanController;
 use App\Http\Controllers\Admin\Pembuatan\PesananController;
 use App\Http\Controllers\Admin\Pembuatan\JadwalProduksiController;
+//Laporam
+use App\Http\Controllers\Admin\Transaksi\LaporanTransaksi;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -133,6 +135,12 @@ Route::middleware([Admin::class])->group(function () {
             Route::get('/edit-penjadwalan/{id}', [JadwalProduksiController::class, 'edit'])->name('edit-penjadwalan');
             Route::put('/update-penjadwalan/{id}', [JadwalProduksiController::class, 'update'])->name('update-penjadwalan');
             Route::delete('/destroy-penjadwalan/{id}', [JadwalProduksiController::class, 'destroy'])->name('destroy-penjadwalan');
+        });
+        //laporam transaksi
+        Route::prefix('transaksi')->name('transaksi.')->group(function () {
+            Route::get('/item-laporan', [LaporanTransaksi::class, 'index'])->name('item-laporan');
+            Route::get('/export-excel', [LaporanTransaksi::class, 'exportExcel'])->name('export.excel');
+            Route::get('/export-pdf', [LaporanTransaksi::class, 'exportPdf'])->name('export.pdf');
         });
     });
 });

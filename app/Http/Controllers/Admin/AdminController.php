@@ -9,21 +9,47 @@ use App\Models\Produk;
 use App\Models\Bahan;
 use App\Models\Overhead;
 use App\Models\Lokasi;
+use Carbon\Carbon;
+use App\Models\Pesanan;
+use App\Models\JadwalProduksi;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     // Fitur Dashboard 
     public function index()
-    {
-        // Hitung jumlah total karyawan berdasarkan role
-        $jumlahKaryawan = User::where('role', 'karyawan')->count();
-        $jumlahProduk = Produk::count();
-        $jumlahBahan = Bahan::count();
-        $jumlahOverhead = Overhead::count();
-        $jumlahLokasi = Lokasi::count();
+{
+    $jumlahKaryawan = User::where('role', 'karyawan')->count();
+    $jumlahProduk = Produk::count();
+    $jumlahBahan = Bahan::count();
+    $jumlahOverhead = Overhead::count();
+    $jumlahLokasi = Lokasi::count();
 
-        return view('admin.index', compact('jumlahKaryawan', 'jumlahProduk', 'jumlahBahan', 'jumlahOverhead', 'jumlahLokasi'));
-    }
+    // Tambahan
+    $totalPesananBulanIni = Pesanan::whereMonth('tanggal_pesanan', Carbon::now()->month)->count();
+    $produksiSelesaiBulanIni = JadwalProduksi::where('status_jadwal', 'selesai')
+                                ->whereMonth('tanggal_mulai', Carbon::now()->month)->count();
+    $totalUpahBulanIni = DB::table('jadwal_user')
+                            ->whereMonth('created_at', Carbon::now()->month)
+                            ->sum('upah');
+
+    // Ambil jadwal hari ini
+    $jadwalHariIni = JadwalProduksi::with('pesanan', 'users')
+                        ->whereDate('tanggal_mulai', Carbon::today())
+                        ->get();
+
+    return view('admin.index', compact(
+        'jumlahKaryawan',
+        'jumlahProduk',
+        'jumlahBahan',
+        'jumlahOverhead',
+        'jumlahLokasi',
+        'totalPesananBulanIni',
+        'produksiSelesaiBulanIni',
+        'totalUpahBulanIni',
+        'jadwalHariIni'
+    ));
+}
 
     // Menampilkan daftar Item Karyawan
     public function itemKaryawan(Request $request)

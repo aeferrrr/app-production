@@ -167,7 +167,7 @@
     </li>
     <li class="menu-header small text-uppercase"><span class="menu-header-text">Laporan Transaksi</span></li>
     <li class="menu-item ">
-        <a href="{{ route('admin.index') }}" class="menu-link">
+        <a href="{{ route('admin.transaksi.item-laporan') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-calculator"></i>
             <div data-i18n="Analytics">Laporan Transaksi</div>
         </a>
