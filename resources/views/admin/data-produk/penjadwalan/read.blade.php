@@ -1,3 +1,6 @@
+@extends('layout.layout')
+@section('title', 'Penjadwalan Produksi')
+@section('content')
 
     <div class="container mt-4">
         <div class="card">
@@ -103,5 +106,4 @@
             </div>
         </div>
     </div>
-
 @endsection

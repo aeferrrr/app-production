@@ -140,7 +140,7 @@ Route::middleware([Admin::class])->group(function () {
         //HPP
         Route::prefix('produksi')->name('produksi.')->group(function () {
             // ... route pesanan dan produk bahan kamu
-            Route::get('/item-hpp', [HargaPokokTransaksiController::class, 'index'])->name('item-hpp');
+            Route::get('/hpp', [HargaPokokTransaksiController::class, 'index'])->name('hpp');
         });
         //laporam transaksi
         Route::prefix('transaksi')->name('transaksi.')->group(function () {

@@ -158,7 +158,7 @@
         </a>
     </li>
     <li class="menu-item ">
-        <a href="{{ route('admin.index') }}" class="menu-link">
+        <a href="{{ route('admin.produksi.hpp') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-calculator"></i>
             <div data-i18n="Analytics">Perhitungan HPP</div>
         </a>
