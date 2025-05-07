@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\Produk\LokasiController;
 use App\Http\Controllers\Admin\Pembuatan\ProdukBahanController;
 use App\Http\Controllers\Admin\Pembuatan\PesananController;
 use App\Http\Controllers\Admin\Pembuatan\JadwalProduksiController;
+use App\Http\Controllers\Admin\Pembuatan\HargaPokokTransaksiController;
 //Laporam
 use App\Http\Controllers\Admin\Transaksi\LaporanTransaksi;
 
@@ -135,6 +136,11 @@ Route::middleware([Admin::class])->group(function () {
             Route::get('/edit-penjadwalan/{id}', [JadwalProduksiController::class, 'edit'])->name('edit-penjadwalan');
             Route::put('/update-penjadwalan/{id}', [JadwalProduksiController::class, 'update'])->name('update-penjadwalan');
             Route::delete('/destroy-penjadwalan/{id}', [JadwalProduksiController::class, 'destroy'])->name('destroy-penjadwalan');
+        });
+        //HPP
+        Route::prefix('produksi')->name('produksi.')->group(function () {
+            // ... route pesanan dan produk bahan kamu
+            Route::get('/item-hpp', [HargaPokokTransaksiController::class, 'index'])->name('item-hpp');
         });
         //laporam transaksi
         Route::prefix('transaksi')->name('transaksi.')->group(function () {

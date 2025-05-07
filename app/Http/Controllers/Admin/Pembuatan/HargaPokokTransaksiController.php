@@ -8,4 +8,8 @@ use Illuminate\Http\Request;
 class HargaPokokTransaksi extends Controller
 {
     //
+    public function index (Request $request)
+    {
+        
+    }
 }

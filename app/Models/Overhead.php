@@ -15,4 +15,12 @@ class Overhead extends Model
         'biaya_bop',
         'keterangan_bop',
     ];
+
+    public function jadwalProduksi()
+    {
+        return $this->belongsToMany(JadwalProduksi::class, 'jadwal_overhead', 'overhead_id', 'jadwal_id')
+                    ->withPivot('biaya')
+                    ->withTimestamps();
+    }
+
 }

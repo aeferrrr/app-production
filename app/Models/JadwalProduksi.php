@@ -37,5 +37,13 @@ class JadwalProduksi extends Model
                     ->withPivot('upah')
                     ->withTimestamps();
     }
+
+    public function overheads()
+    {
+        return $this->belongsToMany(Overhead::class, 'jadwal_overhead', 'jadwal_id', 'overhead_id')
+                    ->withPivot('biaya')
+                    ->withTimestamps();
+    }
+
     
 }
