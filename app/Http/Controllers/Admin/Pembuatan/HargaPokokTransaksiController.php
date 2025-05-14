@@ -18,17 +18,16 @@ class HargaPokokTransaksiController extends Controller
         if ($request->has('produk_id') && $request->produk_id != '') {
             $selectedProduct = Produk::with('produkBahan.bahan')->findOrFail($request->produk_id);
             $jumlah = (int) $request->jumlah ?? 0;
-            $totalBTK = (int) $request->btk ?? 0; // total BTK langsung (bukan per unit)
-            $totalBOP = (int) $request->bop ?? 0; // total BOP langsung (bukan per unit)
-            $profitPercent = (float) $request->profit ?? 0;
+            $totalBTK = (int) $request->btk ?? 0; // BTK total untuk seluruh produksi
+            $totalBOP = (int) $request->bop ?? 0; // BOP total untuk seluruh produksi
 
-            $hppData = $this->calculateHpp($selectedProduct, $jumlah, $totalBTK, $totalBOP, $profitPercent);
+            $hppData = $this->calculateHpp($selectedProduct, $jumlah, $totalBTK, $totalBOP);
         }
 
         return view('admin.data-produk.hpp.index', compact('produk', 'selectedProduct', 'jumlah', 'hppData'));
     }
 
-    private function calculateHpp($produk, $quantity, $totalBTK, $totalBOP, $profitPercent)
+    private function calculateHpp($produk, $quantity, $totalBTK, $totalBOP)
     {
         $bahan = [];
         $totalBBB = 0;
@@ -54,9 +53,6 @@ class HargaPokokTransaksiController extends Controller
         $totalHPP = $totalBBB + $totalBTK + $totalBOP;
         $hppPerUnit = $quantity > 0 ? $totalHPP / $quantity : 0;
 
-        $profitAmount = $hppPerUnit * ($profitPercent / 100);
-        $hargaJualPerUnit = $hppPerUnit + $profitAmount;
-
         return [
             'bahan' => $bahan,
             'totalBBB' => $totalBBB,
@@ -64,9 +60,6 @@ class HargaPokokTransaksiController extends Controller
             'totalBOP' => $totalBOP,
             'totalHPP' => $totalHPP,
             'hppPerUnit' => $hppPerUnit,
-            'hargaJualPerUnit' => $hargaJualPerUnit,
-            'totalHargaJual' => $hargaJualPerUnit * $quantity,
-            'profitPercent' => $profitPercent,
             'jumlah' => $quantity,
         ];
     }

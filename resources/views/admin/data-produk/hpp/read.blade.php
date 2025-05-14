@@ -1,6 +1,7 @@
 @extends('layout.layout')
 @section('title', 'Penjadwalan Produksi')
 @section('content')
+
 <form method="GET" action="{{ route('hpp.proses') }}" class="d-flex mb-4">
     <select name="id_produk" class="form-select me-2">
         @foreach($produkList as $produk)
@@ -27,7 +28,7 @@
     <tbody>
         @foreach($dataHPP as $i => $row)
         <tr>
-            <td>{{ $i+1 }}</td>
+            <td>{{ $i + 1 }}</td>
             <td>{{ $row['kode_produk'] }}</td>
             <td>{{ $row['nama_produk'] }}</td>
             <td>{{ $row['jumlah'] }}</td>
@@ -45,5 +46,5 @@
         @endforeach
     </tbody>
 </table>
-w
+
 @endsection

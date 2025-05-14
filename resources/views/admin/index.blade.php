@@ -112,33 +112,6 @@
         </div>
     </div>
 
-    <!-- ⚡ Aksi Cepat -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title mb-3">Aksi Cepat</h5>
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="{{ route('admin.produk.create') }}" class="btn btn-outline-primary">
-                            <i class="bx bx-plus-circle me-1"></i> Tambah Produk
-                        </a>
-                        <a href="#" class="btn btn-outline-success">
-                            <i class="bx bx-calendar-plus me-1"></i> Buat Penjadwalan
-                        </a>
-                        <a href="{{ route('admin.bahan.create') }}" class="btn btn-outline-warning">
-                            <i class="bx bx-package me-1"></i> Input Bahan
-                        </a>
-                        <a href="{{ route('admin.overhead.create') }}" class="btn btn-outline-danger">
-                            <i class="bx bx-money me-1"></i> Input Overhead
-                        </a>
-                        <a href="{{ route('admin.lokasi.create') }}" class="btn btn-outline-info">
-                            <i class="bx bx-map me-1"></i> Input Lokasi
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 @endsection

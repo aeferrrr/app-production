@@ -22,7 +22,7 @@
                             value="{{ request('search') }}">
                         <button type="submit" class="btn btn-sm btn-primary">Cari</button>
                     </form>
-                    <a href="{{ route('admin.produksi.create') }}" class="btn btn-sm btn-primary ms-auto">
+                    <a href="{{ route('admin.produksi.create-pesanan') }}" class="btn btn-sm btn-primary ms-auto">
                         <i class="bx bx-plus"></i> Tambah Pemesanan
                     </a>
                 </div>
@@ -60,7 +60,7 @@
 
                                 </td>
                                 <td class="d-flex justify-content-center gap-2">
-                                    <form action="{{ route('admin.produksi.destroy', $pesanan->id_pesanan) }}"
+                                    <form action="{{ route('admin.produksi.destroy-pesanan', $pesanan->id_pesanan) }}"
                                         method="POST"
                                         onsubmit="return confirm('Apakah Anda yakin ingin menghapus pemesanan ini?')">
                                         @csrf
@@ -69,7 +69,7 @@
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </form>
-                                    <a href="{{ route('admin.produksi.edit', $pesanan->id_pesanan) }}"
+                                    <a href="{{ route('admin.produksi.edit-pesanan', $pesanan->id_pesanan) }}"
                                         class="text-primary">
                                         <i class="bx bx-edit"></i>
                                     </a>

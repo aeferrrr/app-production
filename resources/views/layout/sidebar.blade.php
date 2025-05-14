@@ -39,19 +39,19 @@
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                    <div data-i18n="Masukan Penjadwalan">Transaksi</div>
+                    <div data-i18n="Masukan Penjadwalan">Produksi</div>
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item">
-                        <a href="pages-account-settings-account.html" class="menu-link">
-                            <div data-i18n="Lihat Penjadwalan">Masukan Penjadwalan</div>
+                        <a href="{{ route('karyawan.produksi.item-penjadwalan') }}" class="menu-link">
+                            <div data-i18n="Lihat Penjadwalan">Penjadwalan</div>
                         </a>
                     </li>
-                    <li class="menu-item">
+                    {{-- <li class="menu-item">
                         <a href="pages-account-settings-notifications.html" class="menu-link">
-                            <div data-i18n="Notifications">Lihat Penjadwalan</div>
+                            <div data-i18n="Notifications"></div>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li>
             {{-- sidebar admin --}}
@@ -87,7 +87,7 @@
                             <div data-i18n="Bahan">Bahan</div>
                         </a>
                     </li>
-                    <li class="menu-item {{ Request::is('admin/item-overhead') ? 'active' : '' }}">
+                    {{-- <li class="menu-item {{ Request::is('admin/item-overhead') ? 'active' : '' }}">
                         <a href="{{ route('admin.overhead.item-overhead') }}" class="menu-link">
                             <div data-i18n="Overhead">Overhead</div>
                         </a>
@@ -96,7 +96,7 @@
                         <a href="{{ route('admin.lokasi.item-lokasi') }}" class="menu-link">
                             <div data-i18n="Lokasi">Lokasi</div>
                         </a>
-                    </li>
+                    </li> --}}
 
             </li>
     </ul>

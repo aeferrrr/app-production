@@ -5,6 +5,7 @@ use App\Http\Middleware\Karyawan;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Karyawan\KaryawanController;
+use App\Http\Controllers\Karyawan\ProduksiController;
 //data master
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Produk\ProdukController;
@@ -36,6 +37,20 @@ Route::middleware('auth')->group(function () {
 // Middleware untuk karyawan
 Route::middleware([Karyawan::class])->group(function () {
     Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+    Route::prefix('karyawan')->name('karyawan.')->group(function() {
+    
+        Route::prefix('produksi')->name('produksi.')->group(function () {
+            // ... route pesanan dan produk bahan kamu
+            Route::get('/item-penjadwalan', [ProduksiController::class, 'index'])->name('item-penjadwalan');
+            Route::get('/create-penjadwalan', [ProduksiController::class, 'create'])->name('create-penjadwalan');
+            Route::post('/store-penjadwalan', [ProduksiController::class, 'store'])->name('store-penjadwalan');
+            Route::get('/edit-penjadwalan/{id}', [ProduksiController::class, 'edit'])->name('edit-penjadwalan');
+            Route::put('/update-penjadwalan/{id}', [ProduksiController::class, 'update'])->name('update-penjadwalan');
+            Route::post('/karyawan-update-status/{id}', [ProduksiController::class, 'karyawanUpdateStatus'])
+            ->name('karyawan-update-status');
+            Route::delete('/destroy-penjadwalan/{id}', [ProduksiController::class, 'destroy'])->name('destroy-penjadwalan');
+        });
+    });
 });
 
 // Middleware untuk admin
@@ -44,7 +59,7 @@ Route::middleware([Admin::class])->group(function () {
         
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::get('/item-karyawan', [AdminController::class, 'itemKaryawan'])->name('item-karyawan');
-
+        
         // CRUD Karyawan
         Route::prefix('karyawan')->name('karyawan.')->group(function () {
             Route::delete('/destroy/{id}', [AdminController::class, 'destroy'])->name('destroy');
@@ -121,11 +136,11 @@ Route::middleware([Admin::class])->group(function () {
         // CRUD PEMESANAN
         Route::prefix('produksi')->name('produksi.')->group(function () {
             Route::get('/item-pesanan', [PesananController::class, 'index'])->name('item-pesanan');
-            Route::get('/create', [PesananController::class, 'create'])->name('create');
-            Route::post('/store', [PesananController::class, 'store'])->name('store');
-            Route::get('/edit/{id}', [PesananController::class, 'edit'])->name('edit');
-            Route::put('/update/{id}', [PesananController::class, 'update'])->name('update');
-            Route::delete('/destroy/{id}', [PesananController::class, 'destroy'])->name('destroy');
+            Route::get('/create-pesanan', [PesananController::class, 'create'])->name('create-pesanan');
+            Route::post('/store-pesanan', [PesananController::class, 'store'])->name('store-pesanan');
+            Route::get('/edit-pesanan/{id}', [PesananController::class, 'edit'])->name('edit-pesanan');
+            Route::put('/update-pesanan/{id}', [PesananController::class, 'update'])->name('update-pesanan');
+            Route::delete('/destroy-pesanan/{id}', [PesananController::class, 'destroy'])->name('destroy-pesanan');
         });
         // CRUD Penjadwalan
         Route::prefix('produksi')->name('produksi.')->group(function () {
