@@ -49,53 +49,73 @@
         @if ($hppData)
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    <h5>HPP untuk: <strong>{{ $selectedProduct->nama_produk }}</strong> ({{ $jumlah }} unit)</h5>
+                    <h5 class="mb-3">HPP untuk:
+                        <span class="badge bg-primary text-white">{{ $selectedProduct->nama_produk }}</span>
+                        <small class="text-muted">({{ $jumlah }} unit)</small>
+                    </h5>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-sm">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Jenis</th>
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead class="bg-light">
+                                <tr class="text-center fw-bold">
+                                    <th style="width: 20%">Jenis</th>
                                     <th>Rincian</th>
-                                    <th>Total</th>
+                                    <th style="width: 20%">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- BBB -->
                                 <tr>
-                                    <td rowspan="{{ count($hppData['bahan']) + 1 }}">BBB (Bahan Baku)</td>
+                                    <td rowspan="{{ count($hppData['bahan']) + 1 }}" class="align-middle fw-semibold">BBB
+                                        (Bahan Baku)</td>
                                 </tr>
                                 @foreach ($hppData['bahan'] as $bahan)
                                     <tr>
-                                        <td>{{ $bahan['nama'] }} ({{ $bahan['jumlah'] }} {{ $bahan['satuan'] }}) x Rp
-                                            {{ number_format($bahan['harga'], 0, ',', '.') }}</td>
-                                        <td>Rp {{ number_format($bahan['subtotal'], 0, ',', '.') }}</td>
+                                        <td>
+                                            {{ $bahan['nama'] }} ({{ $bahan['jumlah'] }} {{ $bahan['satuan'] }}) x
+                                            <span class="text-success">Rp
+                                                {{ number_format($bahan['harga'], 0, ',', '.') }}</span>
+                                        </td>
+                                        <td class="text-end">Rp {{ number_format($bahan['subtotal'], 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
-                                <tr class="font-weight-bold bg-light">
+                                <tr class="bg-light fw-bold">
                                     <td>Total BBB</td>
-                                    <td>Rp {{ number_format($hppData['totalBBB'], 0, ',', '.') }}</td>
+                                    <td>Biaya total untuk seluruh produksi</td>
+                                    <td class="text-end">Rp {{ number_format($hppData['totalBBB'], 0, ',', '.') }}</td>
                                 </tr>
 
                                 <!-- BTK -->
-                                <tr class="font-weight-bold">
+                                <tr class="fw-semibold">
                                     <td>BTK (Tenaga Kerja)</td>
                                     <td>Biaya total untuk seluruh produksi</td>
-                                    <td>Rp {{ number_format($hppData['totalBTK'], 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp {{ number_format($hppData['totalBTK'], 0, ',', '.') }}</td>
                                 </tr>
 
                                 <!-- BOP -->
-                                <tr class="font-weight-bold">
+                                <tr class="fw-semibold">
                                     <td>BOP (Overhead)</td>
                                     <td>Biaya total untuk seluruh produksi</td>
-                                    <td>Rp {{ number_format($hppData['totalBOP'], 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp {{ number_format($hppData['totalBOP'], 0, ',', '.') }}</td>
                                 </tr>
 
-                                <!-- HPP -->
-                                <tr class="bg-primary text-white font-weight-bold">
+                                <!-- HPP Total -->
+                                <tr class="bg-primary text-white fw-bold">
                                     <td>HPP Total</td>
-                                    <td colspan="2">Rp {{ number_format($hppData['totalHPP'], 0, ',', '.') }}</td>
+                                    <td colspan="2" class="text-end">Rp
+                                        {{ number_format($hppData['totalHPP'], 0, ',', '.') }}</td>
                                 </tr>
+
+                                <!-- HPP Per Unit -->
+                                <tr class="bg-success text-white fw-bold">
+                                    <td>HPP per Unit</td>
+                                    <td colspan="2" class="text-end">Rp
+                                        {{ number_format($hppData['hppPerUnit'], 0, ',', '.') }}</td>
+                                </tr>
+                                <a href="{{ route('admin.produksi.admin.produksi.hpp.pdf', ['produk_id' => request('produk_id'), 'jumlah' => request('jumlah'), 'btk' => request('btk'), 'bop' => request('bop')]) }}"
+                                    class="btn btn-danger mb-3" target="_blank">
+                                    <i class="fas fa-file-pdf"></i> Export PDF
+                                </a>
 
                             </tbody>
                         </table>

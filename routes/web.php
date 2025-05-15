@@ -156,6 +156,8 @@ Route::middleware([Admin::class])->group(function () {
         Route::prefix('produksi')->name('produksi.')->group(function () {
             // ... route pesanan dan produk bahan kamu
             Route::get('/hpp', [HargaPokokTransaksiController::class, 'index'])->name('hpp');
+            Route::get('/hpp/pdf', [HargaPokokTransaksiController::class, 'exportPdf'])->name('admin.produksi.hpp.pdf');
+
         });
         //laporam transaksi
         Route::prefix('transaksi')->name('transaksi.')->group(function () {
