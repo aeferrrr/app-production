@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container mt-4">
-    <form action="{{ route('admin.produksi.store') }}" method="POST">
+    <form action="{{ route('admin.produksi.store-pesanan') }}" method="POST">
         @csrf
         <div class="row">
             <!-- KIRI: Info Pemesanan -->
