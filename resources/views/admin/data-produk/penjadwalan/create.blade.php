@@ -47,7 +47,7 @@
                             <select name="status_jadwal" class="form-select" required>
                                 <option value="">-- Pilih Status --</option>
                                 <option value="menunggu">Menunggu</option>
-                                <option value="diproses">Diproses</option>
+                                <option value="berjalan">Diproses</option>
                                 <option value="selesai">Selesai</option>
                             </select>
                         </div>
