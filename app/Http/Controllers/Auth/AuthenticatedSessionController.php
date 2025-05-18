@@ -42,8 +42,6 @@ class AuthenticatedSessionController extends Controller
         } elseif ($user->role === 'karyawan') {
             return redirect()->route('karyawan.index');
         }
-    
-        return redirect()->intended(route('dashboard')); // Default jika role tidak dikenali
     }
     
     /**
