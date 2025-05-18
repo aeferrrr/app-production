@@ -9,25 +9,45 @@
             <form action="{{ route('admin.bahan.update', $bahan->id_bahan) }}" method="POST">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="mb-3">
                     <label for="kode_bahan" class="form-label">Kode Bahan</label>
-                    <input type="text" name="kode_bahan" id="kode_bahan" class="form-control" value="{{ $bahan->kode_bahan }}" required>
+                    <input type="text" name="kode_bahan" id="kode_bahan" 
+                        class="form-control @error('kode_bahan') is-invalid @enderror" 
+                        value="{{ old('kode_bahan', $bahan->kode_bahan) }}" >
+                    @error('kode_bahan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="nama_bahan" class="form-label">Nama Bahan</label>
-                    <input type="text" name="nama_bahan" id="nama_bahan" class="form-control" value="{{ $bahan->nama_bahan }}" required>
+                    <input type="text" name="nama_bahan" id="nama_bahan" 
+                        class="form-control @error('nama_bahan') is-invalid @enderror" 
+                        value="{{ old('nama_bahan', $bahan->nama_bahan) }}" >
+                    @error('nama_bahan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="harga_bahan" class="form-label">Harga Bahan</label>
-                    <input type="number" name="harga_bahan" id="harga_bahan" class="form-control" value="{{ $bahan->harga_bahan }}" required>
+                    <input type="number" name="harga_bahan" id="harga_bahan" 
+                        class="form-control @error('harga_bahan') is-invalid @enderror" 
+                        value="{{ old('harga_bahan', $bahan->harga_bahan) }}" >
+                    @error('harga_bahan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="satuan" class="form-label">Satuan</label>
-                    <input type="text" name="satuan" id="satuan" class="form-control" value="{{ $bahan->satuan }}" required>
+                    <input type="text" name="satuan" id="satuan" 
+                        class="form-control @error('satuan') is-invalid @enderror" 
+                        value="{{ old('satuan', $bahan->satuan) }}" >
+                    @error('satuan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn btn-primary">Update</button>

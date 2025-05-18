@@ -10,14 +10,28 @@ use Illuminate\Http\Request;
 
 class ProdukBahanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $produkBahan = ProdukBahan::with(['produk.produkBahan', 'bahan'])->get();
-        $produkGrouped = $produkBahan->groupBy('id_produk');
-        $allBahan = Bahan::all(); // Ambil semua bahan
+        $query = ProdukBahan::with(['produk.produkBahan', 'bahan']);
 
-        return view('admin.data-produk.produksi.read', compact('produkGrouped', 'allBahan'));
+        if ($request->has('search')) {
+            $query->whereHas('produk', function ($q) use ($request) {
+                $q->where('nama_produk', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $produkBahan = $query->get()->groupBy('id_produk');
+        $paginatedProduk = $query->paginate(10)->appends($request->all()); // untuk pagination
+
+        $allBahan = Bahan::all();
+
+        return view('admin.data-produk.produksi.read', [
+            'produkGrouped' => $produkBahan,
+            'allBahan' => $allBahan,
+            'paginatedProduk' => $paginatedProduk,
+        ]);
     }
+
 
     public function create()
     {

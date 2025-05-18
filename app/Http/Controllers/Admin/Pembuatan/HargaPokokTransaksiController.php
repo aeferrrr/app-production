@@ -67,47 +67,29 @@ class HargaPokokTransaksiController extends Controller
         ];
     }
     public function exportPdf(Request $request)
-{
-    $produk_id = $request->produk_id;
-    $jumlah = $request->jumlah;
-    $btk = $request->btk ?? 0;
-    $bop = $request->bop ?? 0;
+    {
+        $produk_id = $request->produk_id;
+        $jumlah = (int) $request->jumlah ?? 0;
+        $btk = (int) $request->btk ?? 0;
+        $bop = (int) $request->bop ?? 0;
 
-    $produk = Produk::findOrFail($produk_id);
-    $bahanBaku = Bahan::with('nama_bahan')
-        ->where('produk_id', $produk_id)
-        ->get();
+        $produk = Produk::with('produkBahan.bahan')->findOrFail($produk_id);
 
-    $totalBBB = 0;
-    $bahanDetail = [];
+        // Gunakan logika perhitungan HPP yang sudah ada
+        $hppData = $this->calculateHpp($produk, $jumlah, $btk, $bop);
 
-    foreach ($bahanBaku as $bahan) {
-        $subtotal = $bahan->jumlah * $bahan->bahanBaku->harga;
-        $totalBBB += $subtotal;
+        $pdf = Pdf::loadView('admin.data-produk.hpp.pdf', [
+            'produk' => $produk,
+            'jumlah' => $jumlah,
+            'btk' => $btk,
+            'bop' => $bop,
+            'bahan' => $hppData['bahan'],
+            'totalBBB' => $hppData['totalBBB'],
+            'totalHPP' => $hppData['totalHPP'],
+            'hppPerUnit' => $hppData['hppPerUnit'],
+        ]);
 
-        $bahanDetail[] = [
-            'nama_bahan' => $bahan->bahanBaku->nama_bahan,
-            'jumlah' => $bahan->jumlah,
-            'satuan' => $bahan->bahanBaku->satuan,
-            'harga' => $bahan->bahanBaku->harga,
-            'subtotal' => $subtotal,
-        ];
+        return $pdf->download('perhitungan_hpp_' . $produk->nama_produk . '.pdf');
     }
 
-    $totalHPP = $totalBBB + $btk + $bop;
-    $hppPerUnit = $jumlah > 0 ? $totalHPP / $jumlah : 0;
-
-    $pdf = Pdf::loadView('admin.data-produk.hpp.pdf', [
-        'produk' => $produk,
-        'jumlah' => $jumlah,
-        'btk' => $btk,
-        'bop' => $bop,
-        'bahan' => $bahanDetail,
-        'totalBBB' => $totalBBB,
-        'totalHPP' => $totalHPP,
-        'hppPerUnit' => $hppPerUnit,
-    ]);
-
-    return $pdf->download('perhitungan_hpp_'.$produk->nama_produk.'.pdf');
-}
 }

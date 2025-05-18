@@ -11,11 +11,18 @@ class BahanController extends Controller
     /**
      * Menampilkan daftar bahan.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bahan = Bahan::paginate(5);
+        $search = $request->input('search');
+
+        $bahan = Bahan::when($search, function ($query, $search) {
+            return $query->where('nama_bahan', 'like', "%{$search}%")
+                        ->orWhere('kode_bahan', 'like', "%{$search}%");
+        })->paginate(5);
+
         return view('admin.data-master.bahan-item.read', compact('bahan'));
     }
+
 
     /**
      * Menampilkan form tambah bahan.
@@ -29,23 +36,31 @@ class BahanController extends Controller
      * Menyimpan bahan baru ke database.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'kode_bahan' => 'required|unique:bahan,kode_bahan',
-            'nama_bahan' => 'required',
-            'harga_bahan' => 'required|numeric',
-            'satuan' => 'required'
-        ]);
+{
+    $request->validate([
+        'kode_bahan' => 'required|unique:bahan,kode_bahan',
+        'nama_bahan' => 'required',
+        'harga_bahan' => 'required|numeric',
+        'satuan' => 'required'
+    ], [
+        'kode_bahan.required' => 'Kode bahan wajib diisi.',
+        'kode_bahan.unique' => 'Kode bahan sudah digunakan.',
+        'nama_bahan.required' => 'Nama bahan wajib diisi.',
+        'harga_bahan.required' => 'Harga bahan wajib diisi.',
+        'harga_bahan.numeric' => 'Harga bahan harus berupa angka.',
+        'satuan.required' => 'Satuan bahan wajib diisi.',
+    ]);
 
-        Bahan::create([
-            'kode_bahan' => $request->kode_bahan,
-            'nama_bahan' => $request->nama_bahan,
-            'harga_bahan' => $request->harga_bahan,
-            'satuan' => $request->satuan,
-        ]);
+    Bahan::create([
+        'kode_bahan' => $request->kode_bahan,
+        'nama_bahan' => $request->nama_bahan,
+        'harga_bahan' => $request->harga_bahan,
+        'satuan' => $request->satuan,
+    ]);
 
-        return redirect()->route('admin.bahan.item-bahan')->with('success', 'Bahan berhasil ditambahkan!');
-    }
+    return redirect()->route('admin.bahan.item-bahan')->with('success', 'Bahan berhasil ditambahkan!');
+}
+
 
     /**
      * Menampilkan form edit bahan.
@@ -59,25 +74,33 @@ class BahanController extends Controller
     /**
      * Update data bahan di database.
      */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'kode_bahan' => 'required|unique:bahan,kode_bahan,'.$id.',id_bahan',
-            'nama_bahan' => 'required',
-            'harga_bahan' => 'required|numeric',
-            'satuan' => 'required'
-        ]);
-    
-        $bahan = Bahan::findOrFail($id);
-        $bahan->update([
-            'kode_bahan' => $request->kode_bahan,
-            'nama_bahan' => $request->nama_bahan,
-            'harga_bahan' => $request->harga_bahan,
-            'satuan' => $request->satuan,
-        ]);
-    
-        return redirect()->route('admin.bahan.item-bahan')->with('success', 'Bahan berhasil diperbarui!');
-    }
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'kode_bahan' => 'required|unique:bahan,kode_bahan,'.$id.',id_bahan',
+        'nama_bahan' => 'required',
+        'harga_bahan' => 'required|numeric',
+        'satuan' => 'required'
+    ], [
+        'kode_bahan.required' => 'Kode bahan wajib diisi.',
+        'kode_bahan.unique' => 'Kode bahan sudah digunakan.',
+        'nama_bahan.required' => 'Nama bahan wajib diisi.',
+        'harga_bahan.required' => 'Harga bahan wajib diisi.',
+        'harga_bahan.numeric' => 'Harga bahan harus berupa angka.',
+        'satuan.required' => 'Satuan bahan wajib diisi.',
+    ]);
+
+    $bahan = Bahan::findOrFail($id);
+    $bahan->update([
+        'kode_bahan' => $request->kode_bahan,
+        'nama_bahan' => $request->nama_bahan,
+        'harga_bahan' => $request->harga_bahan,
+        'satuan' => $request->satuan,
+    ]);
+
+    return redirect()->route('admin.bahan.item-bahan')->with('success', 'Bahan berhasil diperbarui!');
+}
+
 
     /**
      * Menghapus bahan dari database.

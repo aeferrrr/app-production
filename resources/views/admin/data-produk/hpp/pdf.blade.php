@@ -6,7 +6,7 @@
     <style>
         body { font-family: Arial, sans-serif; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #aaa; padding: 8px; }
+        th, td { border: 1px solid #aaa; padding: 8px; vertical-align: top; }
         th { background-color: #f2f2f2; }
         .text-end { text-align: right; }
         .fw-bold { font-weight: bold; }
@@ -27,47 +27,60 @@
             </tr>
         </thead>
         <tbody>
-            <!-- BBB -->
+            <!-- BBB (Bahan Baku) -->
             <tr>
                 <td rowspan="{{ count($bahan) + 1 }}">BBB (Bahan Baku)</td>
+                <td>
+                    {{ $bahan[0]['nama'] }} ({{ $bahan[0]['jumlah'] }} {{ $bahan[0]['satuan'] }}) x Rp {{ number_format($bahan[0]['harga'], 0, ',', '.') }}
+                </td>
+                <td class="text-end">
+                    Rp {{ number_format($bahan[0]['subtotal'], 0, ',', '.') }}
+                </td>
             </tr>
-            @foreach ($bahan as $item)
+            @foreach ($bahan as $index => $item)
+                @if ($index > 0)
                 <tr>
-                    <td>{{ $item['nama'] }} ({{ $item['jumlah'] }} {{ $item['satuan'] }}) x Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
-                    <td class="text-end">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                    <td>
+                        {{ $item['nama'] }} ({{ $item['jumlah'] }} {{ $item['satuan'] }}) x Rp {{ number_format($item['harga'], 0, ',', '.') }}
+                    </td>
+                    <td class="text-end">
+                        Rp {{ number_format($item['subtotal'], 0, ',', '.') }}
+                    </td>
                 </tr>
+                @endif
             @endforeach
             <tr>
-                <td class="fw-bold text-end">Total BBB</td>
+                <td colspan="1" class="fw-bold">Total BBB</td>
                 <td class="fw-bold text-end">Rp {{ number_format($totalBBB, 0, ',', '.') }}</td>
             </tr>
 
             <!-- BTK -->
             <tr>
-                <td>BTK (Tenaga Kerja)</td>
+                <td colspan="2">BTK (Tenaga Kerja)</td>
                 <td class="text-end">Rp {{ number_format($btk, 0, ',', '.') }}</td>
             </tr>
 
             <!-- BOP -->
             <tr>
-                <td>BOP (Overhead)</td>
+                <td colspan="2">BOP (Overhead)</td>
                 <td class="text-end">Rp {{ number_format($bop, 0, ',', '.') }}</td>
             </tr>
 
-            <!-- HPP Total -->
+            <!-- Total HPP -->
             <tr>
-                <td class="fw-bold">Total HPP</td>
+                <td colspan="2" class="fw-bold">Total HPP</td>
                 <td class="fw-bold text-end">Rp {{ number_format($totalHPP, 0, ',', '.') }}</td>
             </tr>
 
-            <!-- HPP Per Unit -->
+            <!-- HPP per Unit -->
             <tr>
-                <td class="fw-bold">HPP per Unit</td>
+                <td colspan="2" class="fw-bold">HPP per Unit</td>
                 <td class="fw-bold text-end">Rp {{ number_format($hppPerUnit, 0, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
 
-    <p class="mt-3">Dicetak pada: {{ \Carbon\Carbon::now()->format('d-m-Y H:i') }}</p>
+    <p class="mt-3">Dicetak pada: {{ \Carbon\Carbon::now('Asia/Jakarta')->format('d-m-Y H:i') }}</p>
+
 </body>
 </html>

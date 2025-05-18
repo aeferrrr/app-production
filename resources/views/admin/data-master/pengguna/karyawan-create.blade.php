@@ -13,7 +13,7 @@
                     <div class="mb-3">
                         <label class="form-label">Nama</label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                            value="{{ old('name') }}" required>
+                            value="{{ old('name') }}">
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -22,7 +22,7 @@
                     <!-- Input Role -->
                     <div class="mb-3">
                         <label class="form-label">Role</label>
-                        <select name="role" class="form-select @error('role') is-invalid @enderror" required>
+                        <select name="role" class="form-select @error('role') is-invalid @enderror">
                             <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="karyawan" {{ old('role') == 'karyawan' ? 'selected' : '' }}>Karyawan</option>
                         </select>
@@ -35,7 +35,7 @@
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                            value="{{ old('email') }}" required>
+                            value="{{ old('email') }}">
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -55,7 +55,7 @@
                     <div class="mb-3">
                         <label class="form-label">Password</label>
                         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                            required>
+                        >
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -65,7 +65,7 @@
                     <div class="mb-3">
                         <label class="form-label">Konfirmasi Password</label>
                         <input type="password" name="password_confirmation"
-                            class="form-control @error('password_confirmation') is-invalid @enderror" required>
+                            class="form-control @error('password_confirmation') is-invalid @enderror">
                         @error('password_confirmation')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

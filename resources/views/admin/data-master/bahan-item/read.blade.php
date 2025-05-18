@@ -19,7 +19,12 @@
                         <input type="text" name="search" class="form-control w-auto" placeholder="Cari Bahan"
                             value="{{ request('search') }}">
                         <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+                        @if (request('search'))
+                            <a href="{{ route('admin.bahan.item-bahan') }}" class="btn btn-sm btn-secondary">Reset</a>
+                        @endif
+
                     </form>
+
                     <a href="{{ route('admin.bahan.create') }}" class="btn btn-sm btn-primary ms-auto">
                         <i class="bx bx-plus"></i> Tambah Bahan
                     </a>
@@ -36,14 +41,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($bahan as $index => $item)
+                        @forelse ($bahan as $index => $item)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $item->kode_bahan }}</td>
                                 <td>{{ $item->nama_bahan }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <input type="text" class="edit-harga form-control" data-id="{{ $item->id_bahan }}" value="Rp {{ number_format($item->harga_bahan, 0, ',', '.') }}">
+                                        <input type="text" class="edit-harga form-control"
+                                            data-id="{{ $item->id_bahan }}"
+                                            value="Rp {{ number_format($item->harga_bahan, 0, ',', '.') }}">
                                         <span class="ceklist ms-2 text-success" style="display: none;">✅</span>
                                     </div>
                                 </td>
@@ -61,8 +68,17 @@
                                             class="bx bx-edit"></i></a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="">
+                                    <div class="alert alert-warning mx-3 mt-3">
+                                        Data bahan tidak ditemukan.
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
+
                 </table>
                 <div class="pagination mt-3 ms-2">
                     {{ $bahan->links('pagination::bootstrap-4') }}

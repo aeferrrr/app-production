@@ -43,6 +43,13 @@ class ProdukController extends Controller
         $request->validate([
             'kode_produk' => 'required|unique:produk,kode_produk|max:255',
             'nama_produk' => 'required|string|max:255',
+        ], [
+            'kode_produk.required' => 'Kode produk wajib diisi.',
+            'kode_produk.unique' => 'Kode produk sudah digunakan.',
+            'kode_produk.max' => 'Kode produk tidak boleh lebih dari 255 karakter.',
+            'nama_produk.required' => 'Nama produk wajib diisi.',
+            'nama_produk.string' => 'Nama produk harus berupa teks.',
+            'nama_produk.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
         ]);
 
         Produk::create([
@@ -70,6 +77,13 @@ class ProdukController extends Controller
         $request->validate([
             'kode_produk' => 'required|max:255|unique:produk,kode_produk,' . $id . ',id_produk',
             'nama_produk' => 'required|string|max:255',
+        ], [
+            'kode_produk.required' => 'Kode produk wajib diisi.',
+            'kode_produk.unique' => 'Kode produk sudah digunakan.',
+            'kode_produk.max' => 'Kode produk tidak boleh lebih dari 255 karakter.',
+            'nama_produk.required' => 'Nama produk wajib diisi.',
+            'nama_produk.string' => 'Nama produk harus berupa teks.',
+            'nama_produk.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
         ]);
 
         $produk = Produk::findOrFail($id);

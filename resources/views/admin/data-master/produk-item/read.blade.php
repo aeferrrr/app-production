@@ -21,6 +21,9 @@
                         <input type="text" name="search" class="form-control w-auto" placeholder="Cari Produk"
                             value="{{ request('search') }}">
                         <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+                        @if (request('search'))
+                            <a href="{{ route('admin.produk.item-produk') }}" class="btn btn-sm btn-secondary">Reset</a>
+                        @endif
                     </form>
                     <a href="{{ route('admin.produk.create') }}" class="btn btn-sm btn-primary ms-auto">
                         <i class="bx bx-plus"></i> Tambah Produk
@@ -36,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($produk as $index => $item)
+                        @forelse ($produk as $index => $item)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $item->kode_produk }}</td>
@@ -54,8 +57,17 @@
                                             class="bx bx-edit"></i></a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <div class="alert alert-warning mx-3 my-2 mb-0">
+                                        Data produk tidak ditemukan.
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
+
                 </table>
                 <div class="pagination mt-3 ms-2">
                     {{ $produk->links('pagination::bootstrap-4') }}
