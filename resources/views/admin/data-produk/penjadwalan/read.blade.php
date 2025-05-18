@@ -76,7 +76,7 @@
                             <!-- Detail Petugas -->
                             @if ($item->users->count())
                                 <tr class="collapse" id="petugas-{{ $item->id_jadwal }}">
-                                    <td colspan="6">
+                                    <td colspan="7">
                                         <div class="p-2">
                                             <h6>Petugas:</h6>
                                             <ul class="list-group">
