@@ -15,6 +15,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'no_wa',
         'password',
         'role',
         // Hapus 'upah' karena itu milik pivot table, bukan di users

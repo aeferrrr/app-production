@@ -34,6 +34,7 @@
                             <th>Kode Pemesanan</th>
                             <th>Nama Pemesan</th>
                             <th>Tanggal Pemesanan</th>
+                            <th>Catatan</th>
                             <th>Detail Produk</th>
                             <th style="width: 100px; text-align: center;">Aksi</th>
                         </tr>
@@ -46,18 +47,27 @@
                             $paginatedPesanan = $pesanan->slice($start, $perPage);
                         @endphp
 
+                        @if ($paginatedPesanan->isEmpty())
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="bx bx-search-alt-2 fs-3 mb-2 d-block"></i>
+                                    <strong>Data tidak ditemukan</strong><br>
+                                </td>
+                            </tr>
+                        @endif
+
                         @foreach ($paginatedPesanan as $index => $pesanan)
                             <tr>
                                 <td>{{ $index + 1 + $start }}</td>
                                 <td>{{ $pesanan->kode_pesanan }}</td>
                                 <td>{{ $pesanan->nama_pemesan }}</td>
                                 <td>{{ \Carbon\Carbon::parse($pesanan->tanggal_pesanan)->format('d-m-Y') }}</td>
+                                <td>{{ $pesanan->catatan ?? '-' }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary px-4 py-0" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#detail-{{ $pesanan->id_pesanan }}">
                                         <small>Lihat</small>
                                     </button>
-
                                 </td>
                                 <td class="d-flex justify-content-center gap-2">
                                     <form action="{{ route('admin.produksi.destroy-pesanan', $pesanan->id_pesanan) }}"
@@ -78,7 +88,7 @@
 
                             <!-- Detail Produk -->
                             <tr class="collapse" id="detail-{{ $pesanan->id_pesanan }}">
-                                <td colspan="6">
+                                <td colspan="8">
                                     <div class="p-2">
                                         <h6>Produk yang Dipesan:</h6>
                                         <ul class="list-group">

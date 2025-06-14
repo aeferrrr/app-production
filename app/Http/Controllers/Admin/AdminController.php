@@ -9,49 +9,59 @@ use App\Models\Produk;
 use App\Models\Bahan;
 use App\Models\Overhead;
 use App\Models\Lokasi;
-use Carbon\Carbon;
 use App\Models\Pesanan;
 use App\Models\JadwalProduksi;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    // Fitur Dashboard 
+    // Dashboard
     public function index()
-{
-    $jumlahKaryawan = User::where('role', 'karyawan')->count();
-    $jumlahProduk = Produk::count();
-    $jumlahBahan = Bahan::count();
-    $jumlahOverhead = Overhead::count();
-    $jumlahLokasi = Lokasi::count();
+    {
+        $jumlahKaryawan = User::where('role', 'karyawan')->count();
+        $jumlahProduk = Produk::count();
+        $jumlahBahan = Bahan::count();
+        $jumlahOverhead = Overhead::count();
+        $jumlahLokasi = Lokasi::count();
 
-    // Tambahan
-    $totalPesananBulanIni = Pesanan::whereMonth('tanggal_pesanan', Carbon::now()->month)->count();
-    $produksiSelesaiBulanIni = JadwalProduksi::where('status_jadwal', 'selesai')
-                                ->whereMonth('tanggal_mulai', Carbon::now()->month)->count();
-    $totalUpahBulanIni = DB::table('jadwal_user')
-                            ->whereMonth('created_at', Carbon::now()->month)
-                            ->sum('upah');
+        $totalPesananBulanIni = Pesanan::whereMonth('tanggal_pesanan', Carbon::now()->month)->count();
+        $produksiSelesaiBulanIni = JadwalProduksi::where('status_jadwal', 'selesai')
+            ->whereMonth('tanggal_mulai', Carbon::now()->month)->count();
+        $totalUpahBulanIni = DB::table('jadwal_user')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->sum('upah');
 
-    // Ambil jadwal hari ini
-    $jadwalHariIni = JadwalProduksi::with('pesanan', 'users')
-                        ->whereDate('tanggal_mulai', Carbon::today())
-                        ->get();
+        $jadwalHariIni = JadwalProduksi::with('pesanan', 'users')
+            ->whereDate('tanggal_mulai', Carbon::today())
+            ->get();
 
-    return view('admin.index', compact(
-        'jumlahKaryawan',
-        'jumlahProduk',
-        'jumlahBahan',
-        'jumlahOverhead',
-        'jumlahLokasi',
-        'totalPesananBulanIni',
-        'produksiSelesaiBulanIni',
-        'totalUpahBulanIni',
-        'jadwalHariIni'
-    ));
-}
+        // Tambahan grafik penjualan per bulan
+        $penjualanPerBulan = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $penjualanPerBulan[] = [
+                'bulan' => Carbon::create()->month($i)->translatedFormat('F'),
+                'jumlah' => Pesanan::whereMonth('tanggal_pesanan', $i)
+                    ->whereYear('tanggal_pesanan', Carbon::now()->year)
+                    ->count()
+            ];
+        }
 
-    // Menampilkan daftar Item Karyawan
+        return view('admin.index', compact(
+            'jumlahKaryawan',
+            'jumlahProduk',
+            'jumlahBahan',
+            'jumlahOverhead',
+            'jumlahLokasi',
+            'totalPesananBulanIni',
+            'produksiSelesaiBulanIni',
+            'totalUpahBulanIni',
+            'jadwalHariIni',
+            'penjualanPerBulan'
+        ));
+    }
+
+    // List Karyawan
     public function itemKaryawan(Request $request)
     {
         $user = User::query();
@@ -61,89 +71,83 @@ class AdminController extends Controller
             });
         }
 
-        // Filter Berdasarkan Role
         if ($request->has('role') && in_array($request->input('role'), ['admin', 'karyawan'])) {
             $user->where('role', $request->input('role'));
         }
 
-        // Paginasi
         $user = $user->paginate(5);
         return view('admin.data-master.pengguna.karyawan', compact('user', 'request'));
     }
 
-    // Tampil form Karyawan
+    // Form Tambah Karyawan
     public function create()
     {
         return view('admin.data-master.pengguna.karyawan-create');
     }
 
-    // Simpan data Karyawan baru
+    // Simpan Karyawan
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:64',
             'role' => 'required|in:admin,karyawan',
             'email' => 'required|email|unique:users,email',
+            'no_wa' => 'required|string|max:20',
             'password' => 'required|min:6|confirmed',
-            // 'upah' => 'required|integer|min:0',
         ], [
             'name.required' => 'Nama wajib diisi.',
             'role.required' => 'Jabatan wajib dipilih.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email ini sudah digunakan, silakan pilih yang lain.',
+            'email.unique' => 'Email ini sudah digunakan.',
+            'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
             'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal harus 6 karakter.',
+            'password.min' => 'Password minimal 6 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            // 'upah.required' => 'Upah wajib diisi.',
-            // 'upah.integer' => 'Upah harus berupa angka tanpa desimal.',
-            // 'upah.min' => 'Upah tidak boleh negatif.',
         ]);
 
         User::create([
             'name' => $request->name,
             'role' => $request->role,
             'email' => $request->email,
+            'no_wa' => $request->no_wa,
             'password' => bcrypt($request->password),
-            // 'upah' => $request->upah,
         ]);
 
         return redirect()->route('admin.item-karyawan')->with('success', 'Karyawan berhasil ditambahkan!');
     }
 
-    // Tampil form Edit Karyawan
+    // Form Edit Karyawan
     public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('admin.data-master.pengguna.karyawan-edit', compact('user'));
     }
 
-    // Update data Karyawan
+    // Update Karyawan
     public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'role' => 'required|in:admin,karyawan',
             'email' => 'required|email|unique:users,email,' . $id,
+            'no_wa' => 'required|string|max:20',
             'password' => 'nullable|min:6',
-            // 'upah' => 'required|integer|min:0',
         ], [
             'name.required' => 'Nama wajib diisi.',
             'role.required' => 'Jabatan wajib dipilih.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email ini sudah digunakan, silakan pilih yang lain.',
-            'password.min' => 'Password minimal harus 6 karakter.',
-            // 'upah.required' => 'Upah wajib diisi.',
-            // 'upah.integer' => 'Upah harus berupa angka tanpa desimal.',
-            // 'upah.min' => 'Upah tidak boleh negatif.',
+            'email.unique' => 'Email ini sudah digunakan.',
+            'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
         ]);
 
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->role = $request->role;
         $user->email = $request->email;
-        // $user->upah = $request->upah;
+        $user->no_wa = $request->no_wa;
 
         if ($request->filled('password')) {
             $user->password = bcrypt($request->password);
@@ -159,7 +163,7 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-    
+
         return redirect()->route('admin.item-karyawan')->with('success', 'Pengguna berhasil dihapus!');
     }
 }

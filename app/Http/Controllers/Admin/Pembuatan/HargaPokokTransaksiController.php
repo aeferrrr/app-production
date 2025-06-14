@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin\Pembuatan;
 
 use App\Http\Controllers\Controller;
-use App\Models\Produk;
-use App\Models\Bahan;
-use App\Models\ProdukBahan;
+use App\Models\Pesanan;
+use App\Models\JadwalProduksi;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -13,48 +12,85 @@ class HargaPokokTransaksiController extends Controller
 {
     public function index(Request $request)
     {
-        $produk = Produk::all();
-        $selectedProduct = null;
-        $jumlah = null;
+        $pesanan = Pesanan::all();
         $hppData = null;
+        $selectedPesanan = null;
+        $totalJumlah = 0;
+        $fakturData = null;
 
-        if ($request->has('produk_id') && $request->produk_id != '') {
-            $selectedProduct = Produk::with('produkBahan.bahan')->findOrFail($request->produk_id);
-            $jumlah = (int) $request->jumlah ?? 0;
-            $totalBTK = (int) $request->btk ?? 0; // BTK total untuk seluruh produksi
-            $totalBOP = (int) $request->bop ?? 0; // BOP total untuk seluruh produksi
+        if ($request->filled('pesanan_id')) {
+            $data = $this->getHppData(
+                $request->pesanan_id,
+                (int) $request->input('bop', 0),
+                (int) $request->input('btk', 0)
+            );
 
-            $hppData = $this->calculateHpp($selectedProduct, $jumlah, $totalBTK, $totalBOP);
+            $selectedPesanan = $data['pesanan'];
+            $hppData = $data['hppData'];
+            $totalJumlah = $data['totalJumlah'];
+            $fakturData = $data['fakturData'];
         }
 
-        return view('admin.data-produk.hpp.index', compact('produk', 'selectedProduct', 'jumlah', 'hppData'));
+        return view('admin.data-produk.hpp.index', compact(
+            'pesanan',
+            'selectedPesanan',
+            'hppData',
+            'totalJumlah',
+            'fakturData'
+        ));
     }
 
-    private function calculateHpp($produk, $quantity, $totalBTK, $totalBOP)
+    public function exportPdf(Request $request)
+    {
+        $pesanan_id = $request->pesanan_id;
+        $bop = (int) $request->bop ?? 0;
+        $btk = (int) $request->btk ?? 0;
+
+        $data = $this->getHppData($pesanan_id, $bop, $btk);
+
+        $pdf = Pdf::loadView('admin.data-produk.hpp.pdf', [
+            'pesanan' => $data['pesanan'],
+            'bahan' => $data['hppData']['bahan'],
+            'totalBBB' => $data['hppData']['totalBBB'],
+            'totalBTK' => $data['hppData']['totalBTK'],
+            'totalBOP' => $data['hppData']['totalBOP'],
+            'totalHPP' => $data['hppData']['totalHPP'],
+            'hppPerUnit' => $data['hppData']['hppPerUnit'],
+            'totalJumlah' => $data['totalJumlah'],
+            'fakturData' => $data['fakturData'],
+        ]);
+
+        return $pdf->download('hpp_' . $data['pesanan']->kode_pesanan . '.pdf');
+    }
+
+    private function calculateHpp($pesanan, $totalJumlah, $totalBTK, $totalBOP)
     {
         $bahan = [];
         $totalBBB = 0;
 
-        foreach ($produk->produkBahan as $pb) {
-            $jumlahBahan = $pb->jumlah_bahan * $quantity;
-            $hargaBahan = $pb->bahan->harga_bahan;
-            $subtotal = $jumlahBahan * $hargaBahan;
+        foreach ($pesanan->detailPesanan as $detail) {
+            $produk = $detail->produk;
+            $jumlahPesanan = $detail->jumlah;
 
-            $bahan[] = [
-                'id' => $pb->bahan->id_bahan,
-                'kode' => $pb->bahan->kode_bahan,
-                'nama' => $pb->bahan->nama_bahan,
-                'jumlah' => $jumlahBahan,
-                'satuan' => $pb->satuan,
-                'harga' => $hargaBahan,
-                'subtotal' => $subtotal,
-            ];
+            foreach ($produk->produkBahan as $pb) {
+                $jumlahBahan = $pb->jumlah_bahan * $jumlahPesanan;
+                $hargaBahan = $pb->bahan->harga_bahan;
+                $subtotal = $jumlahBahan * $hargaBahan;
 
-            $totalBBB += $subtotal;
+                $bahan[] = [
+                    'nama' => $pb->bahan->nama_bahan,
+                    'jumlah' => $jumlahBahan,
+                    'satuan' => $pb->satuan,
+                    'harga' => $hargaBahan,
+                    'subtotal' => $subtotal,
+                ];
+
+                $totalBBB += $subtotal;
+            }
         }
 
         $totalHPP = $totalBBB + $totalBTK + $totalBOP;
-        $hppPerUnit = $quantity > 0 ? $totalHPP / $quantity : 0;
+        $hppPerUnit = $totalJumlah > 0 ? $totalHPP / $totalJumlah : 0;
 
         return [
             'bahan' => $bahan,
@@ -63,33 +99,42 @@ class HargaPokokTransaksiController extends Controller
             'totalBOP' => $totalBOP,
             'totalHPP' => $totalHPP,
             'hppPerUnit' => $hppPerUnit,
-            'jumlah' => $quantity,
         ];
     }
-    public function exportPdf(Request $request)
+
+    private function getHppData($pesanan_id, $bopInput = 0, $btkInput = 0)
     {
-        $produk_id = $request->produk_id;
-        $jumlah = (int) $request->jumlah ?? 0;
-        $btk = (int) $request->btk ?? 0;
-        $bop = (int) $request->bop ?? 0;
+        $pesanan = Pesanan::with('detailPesanan.produk.produkBahan.bahan')->findOrFail($pesanan_id);
+        $totalJumlah = $pesanan->detailPesanan->sum('jumlah');
 
-        $produk = Produk::with('produkBahan.bahan')->findOrFail($produk_id);
+        $jadwalProduksi = JadwalProduksi::where('id_pesanan', $pesanan_id)->get();
+        $totalBTK = $jadwalProduksi->sum('biaya_tenaga_kerja');
 
-        // Gunakan logika perhitungan HPP yang sudah ada
-        $hppData = $this->calculateHpp($produk, $jumlah, $btk, $bop);
+        if ($totalBTK == 0) {
+            $totalBTK = $btkInput;
+        }
 
-        $pdf = Pdf::loadView('admin.data-produk.hpp.pdf', [
-            'produk' => $produk,
-            'jumlah' => $jumlah,
-            'btk' => $btk,
-            'bop' => $bop,
-            'bahan' => $hppData['bahan'],
-            'totalBBB' => $hppData['totalBBB'],
-            'totalHPP' => $hppData['totalHPP'],
-            'hppPerUnit' => $hppData['hppPerUnit'],
-        ]);
+        $hppData = $this->calculateHpp($pesanan, $totalJumlah, $totalBTK, $bopInput);
 
-        return $pdf->download('perhitungan_hpp_' . $produk->nama_produk . '.pdf');
+        $totalPendapatan = 0;
+        foreach ($pesanan->detailPesanan as $detail) {
+            $hargaJual = $detail->produk->harga_jual ?? 0;
+            $jumlah = $detail->jumlah;
+            $totalPendapatan += $hargaJual * $jumlah;
+        }
+
+        $labaKotor = $totalPendapatan - $hppData['totalHPP'];
+        $marginPersen = $totalPendapatan > 0 ? ($labaKotor / $totalPendapatan) * 100 : 0;
+
+        return [
+            'pesanan' => $pesanan,
+            'totalJumlah' => $totalJumlah,
+            'hppData' => $hppData,
+            'fakturData' => [
+                'totalPendapatan' => $totalPendapatan,
+                'labaKotor' => $labaKotor,
+                'marginPersen' => $marginPersen,
+            ],
+        ];
     }
-
 }

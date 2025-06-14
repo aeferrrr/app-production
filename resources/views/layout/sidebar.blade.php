@@ -69,7 +69,7 @@
                 class="menu-item {{ Request::is('admin/item-karyawan', 'admin/item-produk', 'admin/item-bahan', 'admin/item-overhead', 'admin/item-rencana-penjadwalan') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Data Master</div>
+                    <div data-i18n="Layouts">Data Operasional</div>
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item {{ Request::is('admin/item-karyawan') ? 'active' : '' }}">
@@ -148,19 +148,19 @@
     <li class="menu-item ">
         <a href="{{ route('admin.produksi.item-pesanan') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-receipt"></i>
-            <div data-i18n="Analytics">Pencatatan Pesanan</div>
+            <div data-i18n="Analytics">Pesanan</div>
         </a>
     </li>
     <li class="menu-item ">
         <a href="{{ route('admin.produksi.item-penjadwalan') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-calendar-check"></i>
-            <div data-i18n="Analytics">Buat Penjadwalan</div>
+            <div data-i18n="Analytics">Penjadwalan</div>
         </a>
     </li>
     <li class="menu-item ">
         <a href="{{ route('admin.produksi.hpp') }}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-calculator"></i>
-            <div data-i18n="Analytics">Perhitungan HPP</div>
+            <div data-i18n="Analytics">Harga Pokok Produksi</div>
         </a>
     </li>
 

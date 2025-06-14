@@ -10,7 +10,7 @@ class Produk extends Model
     protected $primaryKey = 'id_produk'; // Primary key
     public $timestamps = true; // Aktifkan timestamps
 
-    protected $fillable = ['kode_produk', 'nama_produk']; // Kolom yang bisa diisi
+    protected $fillable = ['kode_produk', 'nama_produk', 'harga_jual']; // Kolom yang bisa diisi
 
     // Relasi ke tabel produk_bahan
     public function produkBahan()

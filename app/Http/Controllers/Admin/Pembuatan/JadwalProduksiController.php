@@ -8,32 +8,29 @@ use App\Models\Pesanan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class JadwalProduksiController extends Controller
 {
- //menampilkan daftar penjadwalan
-
     public function index(Request $request)
     {
-        // Ambil data Penjadwalan beserta relasi dengan JadwalUser dan User
         $penjadwalan = JadwalProduksi::with([
             'users',
             'pesanan',
-            'jadwalUser' // cukup ini aja, karena udah relasi ke User langsung
+            'jadwalUser'
         ])->get();
-        
-    
-        // Tampilkan hasilnya
+
         return view('admin.data-produk.penjadwalan.read', compact('penjadwalan'));
     }
+
     public function create()
     {
-        $pesanan = Pesanan::all(); // Ambil semua pesanan
-        $users = User::where('role', 'karyawan')->get(); // Ambil hanya user yang role-nya karyawan
-    
+        $pesanan = Pesanan::all();
+        $users = User::where('role', 'karyawan')->get();
+
         return view('admin.data-produk.penjadwalan.create', compact('pesanan', 'users'));
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -45,7 +42,6 @@ class JadwalProduksiController extends Controller
             'upah.*'            => 'required|numeric|min:0',
         ]);
 
-        // Simpan penjadwalan produksi
         $penjadwalan = JadwalProduksi::create([
             'id_pesanan'      => $request->id_pesanan,
             'tanggal_mulai'   => $request->tanggal_mulai,
@@ -53,15 +49,26 @@ class JadwalProduksiController extends Controller
             'status_jadwal'   => $request->status_jadwal,
         ]);
 
-        // Simpan relasi ke user (petugas) + upah lewat tabel pivot
         foreach ($request->user_id as $index => $userId) {
             $penjadwalan->users()->attach($userId, [
                 'upah' => $request->upah[$index],
             ]);
         }
 
+        // Kirim notifikasi WA ke masing-masing karyawan
+        foreach ($penjadwalan->users as $user) {
+            if ($user->no_wa) {
+                $pesan = "Halo {$user->name}, kamu ditugaskan untuk produksi pesanan dari tanggal " .
+                         date('d M Y', strtotime($penjadwalan->tanggal_mulai)) . " sampai " .
+                         date('d M Y', strtotime($penjadwalan->tanggal_selesai)) . ". Silakan cek sistem yaa 👨‍🍳";
+
+                $this->kirimWhatsAppHideki($user->no_wa, $pesan);
+            }
+        }
+
         return redirect()->route('admin.produksi.item-penjadwalan')->with('success', 'Penjadwalan berhasil dibuat.');
     }
+
     public function edit($id)
     {
         $jadwal = JadwalProduksi::with('users')->findOrFail($id);
@@ -70,6 +77,7 @@ class JadwalProduksiController extends Controller
 
         return view('admin.data-produk.penjadwalan.edit', compact('jadwal', 'pesanan', 'users'));
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -90,7 +98,6 @@ class JadwalProduksiController extends Controller
             'status_jadwal'   => $request->status_jadwal,
         ]);
 
-        // Sinkronisasi user dan upah
         $syncData = [];
         foreach ($request->user_id as $index => $userId) {
             $syncData[$userId] = ['upah' => $request->upah[$index]];
@@ -100,9 +107,33 @@ class JadwalProduksiController extends Controller
 
         return redirect()->route('admin.produksi.item-penjadwalan')->with('success', 'Penjadwalan berhasil diupdate.');
     }
+
     public function destroy($id)
     {
         JadwalProduksi::destroy($id);
         return redirect()->route('admin.produksi.item-penjadwalan')->with('success', 'Pesanan berhasil dihapus.');
+    }
+
+    private function kirimWhatsAppHideki($nomor, $pesan)
+    {
+        try {
+            $response = Http::post('https://server-wagateway.hidekihoster.id/send-message', [
+                'api_key' => env('WA_API_KEY', 'nw79GH7qBDNfPrhozJN5VNCxWDwU12OA'),
+                'sender' => env('WA_SENDER', '6285117314151'),
+                'number' => $nomor,
+                'message' => $pesan,
+            ]);
+
+            if ($response->failed()) {
+                logger()->error('Gagal kirim WA via Hideki:', [
+                    'nomor' => $nomor,
+                    'response' => $response->body()
+                ]);
+            }
+        } catch (\Exception $e) {
+            logger()->error('Exception kirim WA Hideki:', [
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

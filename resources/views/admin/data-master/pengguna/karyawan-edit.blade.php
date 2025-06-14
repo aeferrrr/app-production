@@ -41,6 +41,15 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <!-- Input No. WA -->
+                    <div class="mb-3">
+                        <label class="form-label">Nomor WhatsApp</label>
+                        <input type="text" name="no_wa" class="form-control @error('no_wa') is-invalid @enderror"
+                            value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 6281234567890" required>
+                        @error('no_wa')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     {{-- <!-- Input Upah -->
                     <div class="mb-3">

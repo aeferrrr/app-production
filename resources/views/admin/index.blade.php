@@ -3,8 +3,7 @@
 
 @section('content')
     <div class="container mt-4">
-
-        <!-- 📊 Statistik Master Data -->
+        <!-- Kartu Statistik -->
         <div class="d-flex flex-wrap justify-content-between gap-3">
             @php
                 $cards = [
@@ -30,8 +29,7 @@
             @endforeach
         </div>
 
-
-        <!-- 📦 Statistik Produksi -->
+        <!-- Statistik Produksi -->
         <div class="row mt-4">
             @php
                 $stats = [
@@ -47,7 +45,6 @@
                         'icon' => 'bx-check',
                         'bg' => 'dark',
                     ],
-                    // ['label' => 'Total Upah Dibayar', 'value' => 'Rp ' . number_format($totalUpahBulanIni, 0, ',', '.'), 'icon' => 'bx-wallet', 'bg' => 'success'],
                 ];
             @endphp
 
@@ -67,8 +64,7 @@
                 </div>
             @endforeach
         </div>
-
-        <!-- 🗓️ Jadwal Produksi Hari Ini -->
+        <!-- Jadwal Produksi Hari Ini -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card shadow-sm">
@@ -98,7 +94,6 @@
                                                     @endforeach
                                                 </div>
                                             </td>
-
                                             <td>
                                                 @foreach ($jadwal->users as $user)
                                                     <span class="badge bg-primary">{{ $user->name }}</span>
@@ -113,7 +108,6 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-
                             </table>
                         @else
                             <p class="text-muted">Tidak ada jadwal produksi hari ini.</p>
@@ -122,7 +116,57 @@
                 </div>
             </div>
         </div>
+        <!-- Grafik Penjualan -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Grafik Penjualan per Bulan ({{ date('Y') }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartPenjualan" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('chartPenjualan').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode(array_column($penjualanPerBulan, 'bulan')) !!},
+                datasets: [{
+                    label: 'Jumlah Pesanan',
+                    data: {!! json_encode(array_column($penjualanPerBulan, 'jumlah')) !!},
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 @endsection

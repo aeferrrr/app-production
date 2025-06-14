@@ -40,6 +40,15 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <!-- Input No. WhatsApp -->
+                    <div class="mb-3">
+                        <label class="form-label">No. WhatsApp</label>
+                        <input type="text" name="no_wa" class="form-control @error('no_wa') is-invalid @enderror"
+                            value="{{ old('no_wa') }}" placeholder="Contoh: 6281234567890">
+                        @error('no_wa')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     {{-- <!-- Input Upah -->
                     <div class="mb-3">
@@ -54,8 +63,7 @@
                     <!-- Input Password -->
                     <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                        >
+                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror">
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

@@ -35,6 +35,7 @@
                             <th>No</th>
                             <th>Kode Produk</th>
                             <th>Nama Produk</th>
+                            <th>Harga Jual</th>
                             <th style="width: 100px; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
@@ -44,6 +45,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $item->kode_produk }}</td>
                                 <td>{{ $item->nama_produk }}</td>
+                                <td>{{ $item->harga_jual }}</td>
                                 <td class="d-flex justify-content-center gap-2">
                                     <form action="{{ route('admin.produk.destroy', $item->id_produk) }}" method="POST"
                                         onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">

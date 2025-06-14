@@ -43,19 +43,19 @@ class ProdukController extends Controller
         $request->validate([
             'kode_produk' => 'required|unique:produk,kode_produk|max:255',
             'nama_produk' => 'required|string|max:255',
+            'harga_jual' => 'required|numeric|min:0',
         ], [
-            'kode_produk.required' => 'Kode produk wajib diisi.',
-            'kode_produk.unique' => 'Kode produk sudah digunakan.',
-            'kode_produk.max' => 'Kode produk tidak boleh lebih dari 255 karakter.',
-            'nama_produk.required' => 'Nama produk wajib diisi.',
-            'nama_produk.string' => 'Nama produk harus berupa teks.',
-            'nama_produk.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
+            'harga_jual.required' => 'Harga jual wajib diisi.',
+            'harga_jual.numeric' => 'Harga jual harus berupa angka.',
+            'harga_jual.min' => 'Harga jual tidak boleh negatif.',
         ]);
 
         Produk::create([
             'kode_produk' => $request->kode_produk,
             'nama_produk' => $request->nama_produk,
+            'harga_jual' => $request->harga_jual,
         ]);
+
 
         return redirect()->route('admin.produk.item-produk')->with('success', 'Produk berhasil ditambahkan!');
     }
@@ -74,23 +74,23 @@ class ProdukController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'kode_produk' => 'required|max:255|unique:produk,kode_produk,' . $id . ',id_produk',
-            'nama_produk' => 'required|string|max:255',
-        ], [
-            'kode_produk.required' => 'Kode produk wajib diisi.',
-            'kode_produk.unique' => 'Kode produk sudah digunakan.',
-            'kode_produk.max' => 'Kode produk tidak boleh lebih dari 255 karakter.',
-            'nama_produk.required' => 'Nama produk wajib diisi.',
-            'nama_produk.string' => 'Nama produk harus berupa teks.',
-            'nama_produk.max' => 'Nama produk tidak boleh lebih dari 255 karakter.',
-        ]);
+    $request->validate([
+        'kode_produk' => 'required|max:255|unique:produk,kode_produk,' . $id . ',id_produk',
+        'nama_produk' => 'required|string|max:255',
+        'harga_jual' => 'required|numeric|min:0',
+    ], [
+        'harga_jual.required' => 'Harga jual wajib diisi.',
+        'harga_jual.numeric' => 'Harga jual harus berupa angka.',
+        'harga_jual.min' => 'Harga jual tidak boleh negatif.',
+    ]);
 
-        $produk = Produk::findOrFail($id);
-        $produk->update([
-            'kode_produk' => $request->kode_produk,
-            'nama_produk' => $request->nama_produk,
-        ]);
+    $produk = Produk::findOrFail($id);
+    $produk->update([
+        'kode_produk' => $request->kode_produk,
+        'nama_produk' => $request->nama_produk,
+        'harga_jual' => $request->harga_jual,
+    ]);
+
 
         return redirect()->route('admin.produk.item-produk')->with('success', 'Produk berhasil diperbarui!');
     }
