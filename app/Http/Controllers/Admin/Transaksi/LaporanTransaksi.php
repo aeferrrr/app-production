@@ -16,18 +16,20 @@ class LaporanTransaksi extends Controller
     public function index(Request $request)
 {
     $laporan = JadwalProduksi::with([
-        'pesanan.detailPesanan.produk',
-        'users',
-        'jadwalUser'
-    ])
-    ->where('status_jadwal', 'selesai')
-    ->when($request->tanggal_mulai, function ($query) use ($request) {
-        $query->whereDate('tanggal_mulai', '>=', $request->tanggal_mulai);
-    })
-    ->when($request->tanggal_selesai, function ($query) use ($request) {
-        $query->whereDate('tanggal_selesai', '<=', $request->tanggal_selesai);
-    })
-    ->get();
+            'pesanan.detailPesanan.produk',
+            'users',
+            'jadwalUser'
+        ])
+        ->where('status_jadwal', 'selesai')
+        ->when($request->tanggal_mulai, function ($query) use ($request) {
+            $query->whereDate('tanggal_mulai', '>=', $request->tanggal_mulai);
+        })
+        ->when($request->tanggal_selesai, function ($query) use ($request) {
+            $query->whereDate('tanggal_selesai', '<=', $request->tanggal_selesai);
+        })
+        ->orderBy('tanggal_mulai', 'desc') // biar urut rapi
+        ->paginate(5) // 🛑 paginate di sini!
+        ->withQueryString(); // biar filter tetap kebawa saat ganti halaman
 
     return view('admin.data-transaksi.laporan-transaksi.read', compact('laporan'));
 }

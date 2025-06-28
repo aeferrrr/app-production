@@ -33,7 +33,7 @@ class AdminController extends Controller
             ->sum('upah');
 
         $jadwalHariIni = JadwalProduksi::with('pesanan', 'users')
-            ->whereDate('tanggal_mulai', Carbon::today())
+            ->whereDate('tanggal_mulai', Carbon::now('Asia/Jakarta')->toDateString())
             ->get();
 
         // Tambahan grafik penjualan per bulan
@@ -46,6 +46,18 @@ class AdminController extends Controller
                     ->count()
             ];
         }
+        // Ambil produk paling banyak dipesan bulan ini
+        $produkTerlaris = DB::table('detail_pesanan')
+        ->join('produk', 'detail_pesanan.id_produk', '=', 'produk.id_produk')
+        ->join('pesanan', 'detail_pesanan.id_pesanan', '=', 'pesanan.id_pesanan')
+        ->select('produk.nama_produk', DB::raw('SUM(detail_pesanan.jumlah) as total_dipesan'))
+        ->whereMonth('pesanan.tanggal_pesanan', Carbon::now()->month)
+        ->whereYear('pesanan.tanggal_pesanan', Carbon::now()->year)
+        ->groupBy('produk.nama_produk')
+        ->orderByDesc('total_dipesan')
+        ->take(5)
+        ->get();
+
 
         return view('admin.index', compact(
             'jumlahKaryawan',
@@ -57,7 +69,9 @@ class AdminController extends Controller
             'produksiSelesaiBulanIni',
             'totalUpahBulanIni',
             'jadwalHariIni',
-            'penjualanPerBulan'
+            'penjualanPerBulan',
+            'penjualanPerBulan',
+            'produkTerlaris'
         ));
     }
 
@@ -89,18 +103,23 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:64',
+            'name' => 'required|string|unique:users,name|max:32',
             'role' => 'required|in:admin,karyawan',
-            'email' => 'required|email|unique:users,email',
-            'no_wa' => 'required|string|max:20',
+            'email' => 'required|email|unique:users,email|max:32',
+            'no_wa' => 'required|string|unique:users,no_wa|max:15',
             'password' => 'required|min:6|confirmed',
         ], [
             'name.required' => 'Nama wajib diisi.',
+            'name.unique' => 'Nama ini sudah digunakan.',
+            'name.max' => 'Nama melebihi maksimal.',
             'role.required' => 'Jabatan wajib dipilih.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email ini sudah digunakan.',
+            'email.max' => 'Email melebihi maksimal.',
             'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
+            'no_wa.unique' => 'Nomor ini sudah digunakan.',
+            'no_wa.max' => 'Nomor melebihi maksimal.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 6 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
@@ -128,18 +147,21 @@ class AdminController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:32',
             'role' => 'required|in:admin,karyawan',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'no_wa' => 'required|string|max:20',
+            'email' => 'required|max:32|email|unique:users,email,' . $id,
+            'no_wa' => 'required|string|max:15',
             'password' => 'nullable|min:6',
         ], [
             'name.required' => 'Nama wajib diisi.',
+            'name.max' => 'Nama melebihi maksimal.',
             'role.required' => 'Jabatan wajib dipilih.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email ini sudah digunakan.',
+            'email.max' => 'Email melebihi maksimal.',
             'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
+            'no_wa.max' => 'Nomor melebihi maksimal.',
             'password.min' => 'Password minimal 6 karakter.',
         ]);
 

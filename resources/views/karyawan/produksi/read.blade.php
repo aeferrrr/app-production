@@ -41,6 +41,7 @@
                             <th>Tanggal Mulai</th>
                             <th>Tanggal Selesai</th>
                             <th>Status</th>
+                            <th>Catatan</th>
                             <th style="width: 120px;">Petugas</th>
                         </tr>
                     </thead>
@@ -64,6 +65,18 @@
                                             Selesai</option>
                                     </select>
                                 </td>
+                                <td>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control catatan-input"
+                                            value="{{ $item->pesanan->catatan ?? '' }}"
+                                            data-id="{{ $item->pesanan->id_pesanan }}">
+                                        <button class="btn btn-success btn-simpan-catatan"
+                                            data-id="{{ $item->pesanan->id_pesanan }}">
+                                            <i class="bx bx-save"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
 
 
                                 <td>
@@ -108,6 +121,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $penjadwalan->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>
@@ -147,5 +163,39 @@
             });
         </script>
     @endpush
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const simpanBtns = document.querySelectorAll('.btn-simpan-catatan');
+
+        simpanBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.dataset.id;
+                const input = document.querySelector(`.catatan-input[data-id="${id}"]`);
+                const catatanValue = input.value.trim();
+
+                fetch(`/karyawan/produksi/update-catatan/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ catatan: catatanValue })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Catatan berhasil disimpan!');
+                    } else {
+                        alert('❌ Gagal menyimpan catatan: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('❌ Terjadi error: ' + error);
+                });
+            });
+        });
+    });
+</script>
+
 
 @endsection

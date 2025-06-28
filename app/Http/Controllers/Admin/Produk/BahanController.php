@@ -38,17 +38,22 @@ class BahanController extends Controller
     public function store(Request $request)
 {
     $request->validate([
-        'kode_bahan' => 'required|unique:bahan,kode_bahan',
-        'nama_bahan' => 'required',
-        'harga_bahan' => 'required|numeric',
-        'satuan' => 'required'
+        'kode_bahan' => 'required|unique:bahan,kode_bahan|max:10',
+        'nama_bahan' => 'required|unique:bahan,nama_bahan|max:32',
+        'harga_bahan' => 'required|numeric|max:11',
+        'satuan' => 'required|max:15'
     ], [
         'kode_bahan.required' => 'Kode bahan wajib diisi.',
         'kode_bahan.unique' => 'Kode bahan sudah digunakan.',
+        'kode_bahan.max' => 'Kode bahan melebihi maksimal.',
         'nama_bahan.required' => 'Nama bahan wajib diisi.',
+        'nama_bahan.unique' => 'Nama bahan sudah digunakan.',
+        'nama_bahan.max' => 'Nama bahan melebihi maksimal.',
         'harga_bahan.required' => 'Harga bahan wajib diisi.',
         'harga_bahan.numeric' => 'Harga bahan harus berupa angka.',
+        'harga_bahan.max' => 'Harga bahan melebihi maksimal.',
         'satuan.required' => 'Satuan bahan wajib diisi.',
+        'satuan.max' => 'Satuan bahan melebihi maksimal.',
     ]);
 
     Bahan::create([
@@ -77,17 +82,21 @@ class BahanController extends Controller
 public function update(Request $request, $id)
 {
     $request->validate([
-        'kode_bahan' => 'required|unique:bahan,kode_bahan,'.$id.',id_bahan',
-        'nama_bahan' => 'required',
-        'harga_bahan' => 'required|numeric',
-        'satuan' => 'required'
+        'kode_bahan' => 'required|unique:bahan,kode_bahan,'.$id.',id_bahan|max:10',
+        'nama_bahan' => 'required|max:32',
+        'harga_bahan' => 'required|numeric|max:11',
+        'satuan' => 'required|max:15'
     ], [
         'kode_bahan.required' => 'Kode bahan wajib diisi.',
         'kode_bahan.unique' => 'Kode bahan sudah digunakan.',
+        'kode_bahan.max' => 'Kode bahan melebihi maksimal.',
         'nama_bahan.required' => 'Nama bahan wajib diisi.',
+        'nama_bahan.max' => 'Nama bahan melebihi maksimal.',
         'harga_bahan.required' => 'Harga bahan wajib diisi.',
         'harga_bahan.numeric' => 'Harga bahan harus berupa angka.',
+        'harga_bahan.max' => 'Harga bahan melebihi maksimal.',
         'satuan.required' => 'Satuan bahan wajib diisi.',
+        'satuan.max' => 'Satuan bahan melebihi maksimal.',
     ]);
 
     $bahan = Bahan::findOrFail($id);

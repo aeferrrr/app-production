@@ -61,18 +61,19 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center">
-                                    <div class="alert alert-warning mx-3 my-2 mb-0">
+                                <td colspan="5">
+                                    <div class="alert alert-warning mx-3 mt-3">
                                         Data produk tidak ditemukan.
                                     </div>
                                 </td>
                             </tr>
                         @endforelse
+
                     </tbody>
 
                 </table>
-                <div class="pagination mt-3 ms-2">
-                    {{ $produk->links('pagination::bootstrap-4') }}
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $produk->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

@@ -14,7 +14,7 @@
                         <div class="mb-3">
                             <label for="kode_pesanan" class="form-label">Kode Pemesanan</label>
                             <input type="text" class="form-control @error('kode_pesanan') is-invalid @enderror"
-                                id="kode_pesanan" name="kode_pesanan" value="{{ old('kode_pesanan') }}" required>
+                                id="kode_pesanan" name="kode_pesanan" value="{{ old('kode_pesanan') }}" readonly>
                             @error('kode_pesanan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -86,24 +86,36 @@
         </div>
     </form>
 </div>
-
-@endsection
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const tambahBtn = document.getElementById('tambah-produk');
     const produkWrapper = document.getElementById('produk-wrapper');
 
-    // Menambahkan kelas overflow-auto dan max-h-96 ke produkWrapper agar scrollable
-    produkWrapper.classList.add('overflow-auto', 'max-h-96'); // Kelas dari Sneat untuk scrollable
+    // Scrollable class ala Sneat
+    produkWrapper.classList.add('overflow-auto', 'max-h-96', 'px-2');
+
+    // Inisialisasi Select2
+    function initSelect2() {
+        $(produkWrapper).find('.form-select').select2({
+            width: '100%',
+            dropdownParent: $('#produk-wrapper')
+        });
+    }
+
+    initSelect2();
 
     tambahBtn.addEventListener('click', function () {
         const produkItem = document.createElement('div');
-        produkItem.classList.add('row', 'mb-3', 'produk-item');
+        produkItem.classList.add('row', 'g-3', 'mb-3', 'produk-item');
 
         produkItem.innerHTML = `
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <label class="form-label">Produk</label>
                 <select name="produk_id[]" class="form-select" required>
                     <option value="">-- Pilih Produk --</option>
@@ -114,21 +126,25 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="col-md-4">
                 <label class="form-label">Jumlah</label>
-                <input type="number" name="jumlah[]" class="form-control" required min="1">
+                <input type="number" name="jumlah[]" class="form-control" required min="1" placeholder="Contoh: 2">
             </div>
-            <div class="col-md-3 d-flex align-items-end">
-                <button type="button" class="btn btn-danger remove-produk">Hapus</button>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-outline-danger btn-sm w-100 remove-produk">
+                    <i class="bx bx-trash"></i> Hapus
+                </button>
             </div>
         `;
 
         produkWrapper.appendChild(produkItem);
+        initSelect2(); // Inisialisasi select2 ulang
     });
 
     produkWrapper.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-produk')) {
+        if (e.target.closest('.remove-produk')) {
             e.target.closest('.produk-item').remove();
         }
     });
 });
 </script>
 @endpush
+@endsection

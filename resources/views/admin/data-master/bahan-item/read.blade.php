@@ -80,8 +80,8 @@
                     </tbody>
 
                 </table>
-                <div class="pagination mt-3 ms-2">
-                    {{ $bahan->links('pagination::bootstrap-4') }}
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $bahan->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

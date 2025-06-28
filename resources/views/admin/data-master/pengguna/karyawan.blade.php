@@ -94,8 +94,8 @@
                     </table>
 
                     <!-- Pagination -->
-                    <div class="pagination mt-3 ms-3">
-                        {{ $user->links('pagination::bootstrap-4') }}
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $user->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             </div>

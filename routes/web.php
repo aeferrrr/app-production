@@ -49,6 +49,8 @@ Route::middleware([Karyawan::class])->group(function () {
             Route::post('/karyawan-update-status/{id}', [ProduksiController::class, 'karyawanUpdateStatus'])
             ->name('karyawan-update-status');
             Route::delete('/destroy-penjadwalan/{id}', [ProduksiController::class, 'destroy'])->name('destroy-penjadwalan');
+            Route::post('/update-catatan/{id}', [\App\Http\Controllers\Karyawan\ProduksiController::class, 'updateCatatan'])->name('update-catatan');
+
         });
     });
 });
@@ -132,6 +134,8 @@ Route::middleware([Admin::class])->group(function () {
             Route::get('/edit/{id}', [ProdukBahanController::class, 'edit'])->name('edit'); // Form edit relasi
             Route::put('/update/{id}', [ProdukBahanController::class, 'update'])->name('update'); // Update relasi
             Route::delete('/destroy/{id}', [ProdukBahanController::class, 'destroy'])->name('destroy');
+            Route::delete('/delete-all', [ProdukBahanController::class, 'destroyAllBahan'])->name('destroyAllBahan');
+
         });
         // CRUD PEMESANAN
         Route::prefix('produksi')->name('produksi.')->group(function () {

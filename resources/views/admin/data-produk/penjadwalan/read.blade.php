@@ -7,25 +7,45 @@
             <h5 class="card-header d-flex justify-content-between align-items-center">
                 Data Penjadwalan Produksi
             </h5>
+
             @if (session('success'))
-                <div class="alert alert-success mx-2">
+                <div class="alert alert-success mx-3 mt-3">
                     {{ session('success') }}
                 </div>
             @endif
+
             <div class="table-responsive text-nowrap">
                 <!-- Form Filter & Search -->
-                <div class="left-header d-flex justify-content-between align-items-center mx-3">
-                    <form action="{{ route('admin.produksi.item-pesanan') }}" class="d-flex gap-2 p-1" method="get">
-                        @csrf
-                        <input type="text" name="search" class="form-control w-auto" placeholder="Cari Pemesanan"
-                            value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+                <div class="left-header d-flex justify-content-between align-items-center mx-3 my-3">
+                    <form action="{{ route('admin.produksi.item-penjadwalan') }}"
+                        class="d-flex flex-wrap gap-2 align-items-end" method="get">
+                        <div>
+                            <label class="form-label mb-0"><small>Kode Pesanan</small></label>
+                            <input type="text" name="search" class="form-control form-control-sm"
+                                placeholder="Cari Kode" value="{{ request('search') }}">
+                        </div>
+                        <div>
+                            <label class="form-label mb-0"><small>Tanggal Mulai</small></label>
+                            <input type="date" name="tanggal_mulai" class="form-control form-control-sm"
+                                value="{{ request('tanggal_mulai') }}">
+                        </div>
+                        <div>
+                            <label class="form-label mb-0"><small>Tanggal Selesai</small></label>
+                            <input type="date" name="tanggal_selesai" class="form-control form-control-sm"
+                                value="{{ request('tanggal_selesai') }}">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary mt-3">Filter</button>
+                            <a href="{{ route('admin.produksi.item-penjadwalan') }}"
+                                class="btn btn-sm btn-outline-secondary mt-3">Reset</a>
+
+                        </div>
                     </form>
                     <a href="{{ route('admin.produksi.create-penjadwalan') }}" class="btn btn-sm btn-primary ms-auto">
                         <i class="bx bx-plus"></i> Tambah Penjadwalan
                     </a>
                 </div>
-                {{-- end --}}
+
                 <table class="table">
                     <thead>
                         <tr>
@@ -59,7 +79,7 @@
                                 <td class="d-flex justify-content-center gap-2">
                                     <form action="{{ route('admin.produksi.destroy-penjadwalan', $item->id_jadwal) }}"
                                         method="POST"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus pemesanan ini?')">
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus penjadwalan ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn text-danger p-0 border-0 bg-transparent">
@@ -98,12 +118,23 @@
                             @endif
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Data penjadwalan belum ada.</td>
+                                <td colspan="7">
+                                    <div class="alert alert-warning mx-3 mt-3 mb-0" role="alert">
+                                        <i class=""></i> Data penjadwalan tidak ditemukan.
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $penjadwalan->appends(request()->query())->links('pagination::bootstrap-5') }}
+                </div>
+
+
+
             </div>
         </div>
     </div>
+
 @endsection

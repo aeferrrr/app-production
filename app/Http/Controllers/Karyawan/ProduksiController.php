@@ -28,11 +28,27 @@ class ProduksiController extends Controller
         $query->where('status_jadwal', $request->status);
     }
 
-    $penjadwalan = $query->latest()->get();
+    $penjadwalan = $query->latest()->paginate(5)->withQueryString();
 
     return view('karyawan.produksi.read', compact('penjadwalan'));
 }
 
+public function updateCatatan(Request $request, $id)
+{
+    try {
+        $request->validate([
+            'catatan' => 'nullable|string|max:255'
+        ]);
+
+        $pesanan = Pesanan::findOrFail($id);
+        $pesanan->catatan = $request->catatan;
+        $pesanan->save();
+
+        return response()->json(['success' => true]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    }
+}
 
     /**
      * Show the form for creating a new resource.

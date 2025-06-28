@@ -42,7 +42,7 @@
                     </div>
                     <!-- Input No. WhatsApp -->
                     <div class="mb-3">
-                        <label class="form-label">No. WhatsApp</label>
+                        <label class="form-label">No. WhatsApp ( Awali Dengan 62 )</label>
                         <input type="text" name="no_wa" class="form-control @error('no_wa') is-invalid @enderror"
                             value="{{ old('no_wa') }}" placeholder="Contoh: 6281234567890">
                         @error('no_wa')

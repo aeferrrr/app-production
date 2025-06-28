@@ -1,14 +1,15 @@
 @extends('layout.layout')
 @section('title', 'Perhitungan HPP')
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <div class="container mt-4">
         <div class="card">
             <h5 class="card-header">Perhitungan Harga Pokok Produksi (HPP)</h5>
-            <div class="card-body">
+            <div class="card-body" id="hpp-card-body">
                 <form action="{{ route('admin.produksi.hpp') }}" method="GET" class="row g-3">
                     <div class="col-md-6">
                         <label for="pesanan_id" class="form-label">Kode Pesanan</label>
-                        <select name="pesanan_id" id="pesanan_id" class="form-select" required>
+                        <select name="pesanan_id" id="pesanan_id" class="form-select select-kode-pesanan" required>
                             <option value="">-- Pilih Kode Pesanan --</option>
                             @foreach ($pesanan as $item)
                                 <option value="{{ $item->id_pesanan }}"
@@ -17,6 +18,7 @@
                                 </option>
                             @endforeach
                         </select>
+
                     </div>
 
                     <div class="col-md-3">
@@ -182,9 +184,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-
                         </table>
-                        w
                     </div>
                 </div>
             </div>
@@ -194,7 +194,21 @@
                     <i class="fas fa-file-pdf"></i> Download PDF
                 </a>
             </div>
-
         @endif
     </div>
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#pesanan_id').select2({
+                    width: '100%',
+                    placeholder: "-- Pilih Kode Pesanan --",
+                    allowClear: true,
+                    dropdownParent: $('#pesanan_id').closest(
+                        '.col-md-6') // Pastikan ini parent yg visible & nggak ngaco
+                });
+            });
+        </script>
+    @endpush
+
 @endsection

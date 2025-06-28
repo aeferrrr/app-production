@@ -139,4 +139,61 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Inisialisasi Select2 untuk field Pilih Pesanan
+    $('select[name="id_pesanan"]').select2({
+        placeholder: "-- Pilih Kode Pesanan --",
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('select[name="id_pesanan"]').parent()
+    });
+
+    // Tambah petugas (ini sudah kamu punya, tinggal dipertahankan)
+    const tambahBtn = document.getElementById('tambah-petugas');
+    const petugasWrapper = document.getElementById('petugas-wrapper');
+    petugasWrapper.classList.add('overflow-auto', 'max-h-96');
+
+    tambahBtn.addEventListener('click', function () {
+        const petugasItem = document.createElement('div');
+        petugasItem.classList.add('row', 'mb-3', 'petugas-item');
+
+        petugasItem.innerHTML = `
+            <div class="col-md-6">
+                <label class="form-label">Nama Petugas</label>
+                <select name="user_id[]" class="form-select" required>
+                    <option value="">-- Pilih Petugas --</option>
+                    @foreach ($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Upah</label>
+                <input type="number" name="upah[]" class="form-control" min="0" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm remove-petugas w-100">Hapus</button>
+            </div>
+        `;
+
+        petugasWrapper.appendChild(petugasItem);
+    });
+
+    petugasWrapper.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-petugas')) {
+            e.target.closest('.petugas-item').remove();
+        }
+    });
+});
+</script>
+@endpush
+
 @endpush

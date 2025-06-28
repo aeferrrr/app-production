@@ -16,12 +16,20 @@
             <div class="table-responsive text-nowrap">
                 <!-- Form Filter & Search -->
                 <div class="left-header d-flex justify-content-between align-items-center mx-3">
-                    <form action="{{ route('admin.produksi.item-pesanan') }}" class="d-flex gap-2 p-1" method="get">
+                    <form action="{{ route('admin.produksi.item-pesanan') }}" class="d-flex flex-wrap gap-2 p-1"
+                        method="get">
                         @csrf
                         <input type="text" name="search" class="form-control w-auto" placeholder="Cari Pemesanan"
                             value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+                        <input type="date" name="tanggal_mulai" class="form-control w-auto"
+                            value="{{ request('tanggal_mulai') }}">
+                        <input type="date" name="tanggal_selesai" class="form-control w-auto"
+                            value="{{ request('tanggal_selesai') }}">
+                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                        <a href="{{ route('admin.produksi.item-pesanan') }}"
+                            class="btn btn-sm btn-outline-secondary">Reset</a>
                     </form>
+
                     <a href="{{ route('admin.produksi.create-pesanan') }}" class="btn btn-sm btn-primary ms-auto">
                         <i class="bx bx-plus"></i> Tambah Pemesanan
                     </a>
@@ -49,12 +57,14 @@
 
                         @if ($paginatedPesanan->isEmpty())
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
-                                    <i class="bx bx-search-alt-2 fs-3 mb-2 d-block"></i>
-                                    <strong>Data tidak ditemukan</strong><br>
+                                <td colspan="8">
+                                    <div class="alert alert-warning mx-3 mt-3 mb-0" role="alert">
+                                        <i class=""></i> Data pemesanan tidak ditemukan.
+                                    </div>
                                 </td>
                             </tr>
                         @endif
+
 
                         @foreach ($paginatedPesanan as $index => $pesanan)
                             <tr>

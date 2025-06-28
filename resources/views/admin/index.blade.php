@@ -64,12 +64,44 @@
                 </div>
             @endforeach
         </div>
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Top 5 Produk Terlaris Bulan Ini ({{ now()->translatedFormat('F') }})</h5>
+            </div>
+            <div class="card-body">
+                @if ($produkTerlaris->isEmpty())
+                    <p class="text-muted">Belum ada pesanan untuk bulan ini.</p>
+                @else
+                    <div class="row">
+                        <!-- Kiri: List -->
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                @foreach ($produkTerlaris as $produk)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ $produk->nama_produk }}
+                                        <span class="badge bg-primary rounded-pill">{{ $produk->total_dipesan }}x</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        <!-- Kanan: Chart -->
+                        <div class="col-md-6">
+                            <canvas id="chartProdukTerlaris" height="200"></canvas>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+
         <!-- Jadwal Produksi Hari Ini -->
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-header">
-                        <h5 class="mb-0">Produksi Hari Ini ({{ \Carbon\Carbon::today()->format('d M Y') }})</h5>
+                        <h5 class="mb-0">Produksi Hari Ini ({{ \Carbon\Carbon::now('Asia/Jakarta')->format('d M Y') }})
+                        </h5>
                     </div>
                     <div class="card-body table-responsive">
                         @if ($jadwalHariIni->count())
@@ -169,4 +201,37 @@
             }
         });
     </script>
+    @if (!$produkTerlaris->isEmpty())
+<script>
+    const ctxProduk = document.getElementById('chartProdukTerlaris').getContext('2d');
+
+    new Chart(ctxProduk, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($produkTerlaris->pluck('nama_produk')) !!},
+            datasets: [{
+                label: 'Jumlah Dipesan',
+                data: {!! json_encode($produkTerlaris->pluck('total_dipesan')) !!},
+                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+</script>
+@endif
+
 @endsection

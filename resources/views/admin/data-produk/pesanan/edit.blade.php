@@ -15,7 +15,7 @@
                         <div class="mb-3">
                             <label for="kode_pesanan" class="form-label">Kode Pemesanan</label>
                             <input type="text" class="form-control @error('kode_pesanan') is-invalid @enderror"
-                                id="kode_pesanan" name="kode_pesanan" value="{{ old('kode_pesanan', $pesanan->kode_pesanan) }}" required>
+                                id="kode_pesanan" name="kode_pesanan" value="{{ old('kode_pesanan', $pesanan->kode_pesanan) }}" readonly required>
                             @error('kode_pesanan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
